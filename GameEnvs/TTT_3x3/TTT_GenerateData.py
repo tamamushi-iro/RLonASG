@@ -59,7 +59,8 @@ def getTrainingData(noOfGames):
                     xWins += 1
                     xWinTurns += b.board[0]
                     xWinwStateSums += b.getwStateSum()
-                    if b.board[0] < 6:		# and b.getwStateSum() > 16:
+                    if b.board[0] == 9:
+                    # if b.board[0] < 6:		# and b.getwStateSum() > 16:
                         inpTrainBuffer.pop()
                         inpTrainList.extend(inpTrainBuffer)
                         outTrainList.extend(outinpTrainBuffer)
@@ -111,10 +112,10 @@ def getTrainingData(noOfGames):
 
     xInpArray = np.array(xInpList)
     xOutArray = np.array(xOutList)
-    np.savetxt('__data__/xInpTrainData-Aggressive.txt', xInpArray, fmt='%d')
-    np.savetxt('__data__/xOutTrainData-Aggressive.txt', xOutArray, fmt='%d')
+    np.savetxt('__data__/xInpTrainData-Defensive.txt', xInpArray, fmt='%d')
+    np.savetxt('__data__/xOutTrainData-Defensive.txt', xOutArray, fmt='%d')
 
-    print("Files xTrainData-Aggressive.txt and xTestData-Aggressive.txt written.\n")
+    print("Files xTrainData-Defensive.txt and xTestData-Defensive.txt written.\n")
 
 if __name__ == '__main__':
 

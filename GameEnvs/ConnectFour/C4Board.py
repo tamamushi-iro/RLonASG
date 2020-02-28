@@ -1,4 +1,5 @@
 from array import array
+import sys
 
 class C4Board:
 	board = array('i', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
@@ -16,15 +17,18 @@ class C4Board:
 				pBoard[i] = 'X'                 # D-Char
 			else:
 				sys.exit("Illegal number encountered on board. Exiting...")
-		print("\n0   1    2    3    4    5    6")
-		print("--+----+----+----+----+----+----+")
+		print("\n+---+---+---+---+---+---+---+")
+		print("| 0 | 1 | 2 | 3 | 4 | 5 | 6 |")
+		print("+---+---+---+---+---+---+---+")
 		for i in range(35):
-			if i in(6, 13, 20, 27):
-				print(pBoard[i] + " | ")
+			if i in(6, 13, 20, 27, 34):
+				print(" " + pBoard[i] + " |")
+			elif i in (0, 7, 14, 21, 28):
+				print("| " + pBoard[i] + "  ", end="")
 			else:
-				print(pBoard[i]+" | ", end=" ")
+				print(" " + pBoard[i] + "  ", end="")
 		
-		print("\n--+----+----+----+----+----+----+")
+		print("+---+---+---+---+---+---+---+")
 
 	def resetBoard(self	):
 		self.board = array('i', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
@@ -168,14 +172,14 @@ class C4Board:
 	def printInfo(self):
 		print("\nGAME[0]: Connect-4\n")
 		print("INFO[0]: The positions on the board are controlled via the column numbers, i.e. \n0   1    2    3    4    5    6:")
-		print("--+----+----+----+----+----+----+")
+		print("---+---+---+---+---+---+---+")
 		for i in range(35):
 			if i in(6, 13, 20, 27):
-				print("  | ")
+				print(" | ")
 			else:
-				print("  | ", end=" ")
+				print(" | ", end="")
 		
-		print("\n--+----+----+----+----+----+----+")
+		print("\n---+---+---+---+---+---+---+")
 		print("INFO[1]: Player X goes first\n")
 
 		
