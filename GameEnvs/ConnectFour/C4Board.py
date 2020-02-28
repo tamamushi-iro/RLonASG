@@ -2,13 +2,13 @@ from array import array
 import sys
 
 class C4Board:
-	board = array('i', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-	wState = array('i', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+	board = array('i', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+	wState = array('i', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 	count = 0
 
 	def printBoard(self):
-		pBoard = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '',  '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
-		for i in range(0, 35):
+		pBoard = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '',  '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ' ']
+		for i in range(0, 42):
 			if self.board[i] == 0:              # D-Val
 				pBoard[i] = ' '
 			elif self.board[i] == -2:           # D-Val
@@ -31,8 +31,8 @@ class C4Board:
 		print("+---+---+---+---+---+---+---+")
 
 	def resetBoard(self	):
-		self.board = array('i', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-		self.wState = array('i', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+		self.board = array('i', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+		self.wState = array('i', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 		self.count = 0
 	
 
@@ -40,6 +40,11 @@ class C4Board:
 		if position < 0 or position > 6:
 			return False
 		
+		if self.board[position + 35] == 0:
+			self.board[position + 35] = playerNum
+			self.count += 1
+			return True
+
 		if self.board[position + 28] == 0:
 			self.board[position + 28] = playerNum
 			self.count += 1
@@ -86,80 +91,103 @@ class C4Board:
 		self.wState[11] = (self.board[11] + self.board[11+7] + self.board[11+14] + self.board[11+21])
 		self.wState[12] = (self.board[12] + self.board[12+7] + self.board[12+14] + self.board[12+21])
 		self.wState[13] = (self.board[13] + self.board[13+7] + self.board[13+14] + self.board[13+21])
+		
+		self.wState[14] = (self.board[14] + self.board[14+7] + self.board[14+14] + self.board[14+21])
+		self.wState[15] = (self.board[15] + self.board[15+7] + self.board[15+14] + self.board[15+21])
+		self.wState[16] = (self.board[17] + self.board[16+7] + self.board[16+14] + self.board[16+21])
+		self.wState[17] = (self.board[18] + self.board[17+7] + self.board[17+14] + self.board[17+21])
+		self.wState[18] = (self.board[19] + self.board[18+7] + self.board[18+14] + self.board[18+21])
+		self.wState[19] = (self.board[20] + self.board[19+7] + self.board[19+14] + self.board[19+21])
+		self.wState[20] = (self.board[21] + self.board[20+7] + self.board[20+14] + self.board[20+21])
 
 		# Horizontal
 		# for i in range(4):
 		# 	self.wState[] = (self.board[i] + self.board[i+1] + self.board[i+2] + self.board[i+3])
-		self.wState[14] = (self.board[0] + self.board[0+1] + self.board[0+2] + self.board[0+3])
-		self.wState[15] = (self.board[1] + self.board[1+1] + self.board[1+2] + self.board[1+3])
-		self.wState[16] = (self.board[2] + self.board[2+1] + self.board[2+2] + self.board[2+3])
-		self.wState[17] = (self.board[3] + self.board[3+1] + self.board[3+2] + self.board[3+3])
+		self.wState[21] = (self.board[0] + self.board[0+1] + self.board[0+2] + self.board[0+3])
+		self.wState[22] = (self.board[1] + self.board[1+1] + self.board[1+2] + self.board[1+3])
+		self.wState[23] = (self.board[2] + self.board[2+1] + self.board[2+2] + self.board[2+3])
+		self.wState[24] = (self.board[3] + self.board[3+1] + self.board[3+2] + self.board[3+3])
 
 		# for i in range(7, 11):
 		# 	self.wState[] = (self.board[i] + self.board[i+1] + self.board[i+2] + self.board[i+3])
-		self.wState[18] = (self.board[7] + self.board[7+1] + self.board[7+2] + self.board[7+3])
-		self.wState[19] = (self.board[8] + self.board[8+1] + self.board[8+2] + self.board[8+3])
-		self.wState[20] = (self.board[9] + self.board[9+1] + self.board[9+2] + self.board[9+3])
-		self.wState[21] = (self.board[10] + self.board[10+1] + self.board[10+2] + self.board[10+3])
+		self.wState[25] = (self.board[7] + self.board[7+1] + self.board[7+2] + self.board[7+3])
+		self.wState[26] = (self.board[8] + self.board[8+1] + self.board[8+2] + self.board[8+3])
+		self.wState[27] = (self.board[9] + self.board[9+1] + self.board[9+2] + self.board[9+3])
+		self.wState[28] = (self.board[10] + self.board[10+1] + self.board[10+2] + self.board[10+3])
 
 
 		# for i in range(14, 18):
 		# 	self.wState[] = (self.board[i] + self.board[i+1] + self.board[i+2] + self.board[i+3])
-		self.wState[22] = (self.board[14] + self.board[14+1] + self.board[14+2] + self.board[14+3])
-		self.wState[23] = (self.board[15] + self.board[15+1] + self.board[15+2] + self.board[15+3])
-		self.wState[24] = (self.board[16] + self.board[16+1] + self.board[16+2] + self.board[16+3])
-		self.wState[25] = (self.board[17] + self.board[17+1] + self.board[17+2] + self.board[17+3])
+		self.wState[29] = (self.board[14] + self.board[14+1] + self.board[14+2] + self.board[14+3])
+		self.wState[30] = (self.board[15] + self.board[15+1] + self.board[15+2] + self.board[15+3])
+		self.wState[31] = (self.board[16] + self.board[16+1] + self.board[16+2] + self.board[16+3])
+		self.wState[32] = (self.board[17] + self.board[17+1] + self.board[17+2] + self.board[17+3])
 
 		# for i in range(21, 25):
 		# 	self.wState[] = (self.board[i] + self.board[i+1] + self.board[i+2] + self.board[i+3])
-		self.wState[26] = (self.board[21] + self.board[21+1] + self.board[21+2] + self.board[21+3])
-		self.wState[27] = (self.board[22] + self.board[22+1] + self.board[22+2] + self.board[22+3])
-		self.wState[28] = (self.board[23] + self.board[23+1] + self.board[23+2] + self.board[23+3])
-		self.wState[29] = (self.board[24] + self.board[24+1] + self.board[24+2] + self.board[24+3])
+		self.wState[33] = (self.board[21] + self.board[21+1] + self.board[21+2] + self.board[21+3])
+		self.wState[34] = (self.board[22] + self.board[22+1] + self.board[22+2] + self.board[22+3])
+		self.wState[35] = (self.board[23] + self.board[23+1] + self.board[23+2] + self.board[23+3])
+		self.wState[36] = (self.board[24] + self.board[24+1] + self.board[24+2] + self.board[24+3])
 
 		# for i in range(28, 32):
 		# 	self.wState[] = (self.board[i] + self.board[i+1] + self.board[i+2] + self.board[i+3])
-		self.wState[30] = (self.board[28] + self.board[28+1] + self.board[28+2] + self.board[28+3])
-		self.wState[31] = (self.board[29] + self.board[29+1] + self.board[29+2] + self.board[29+3])
-		self.wState[32] = (self.board[30] + self.board[30+1] + self.board[30+2] + self.board[30+3])
-		self.wState[33] = (self.board[31] + self.board[31+1] + self.board[31+2] + self.board[31+3])
+		self.wState[37] = (self.board[28] + self.board[28+1] + self.board[28+2] + self.board[28+3])
+		self.wState[38] = (self.board[29] + self.board[29+1] + self.board[29+2] + self.board[29+3])
+		self.wState[39] = (self.board[30] + self.board[30+1] + self.board[30+2] + self.board[30+3])
+		self.wState[40] = (self.board[31] + self.board[31+1] + self.board[31+2] + self.board[31+3])
+
+		self.wState[41] = (self.board[35] + self.board[35+1] + self.board[35+2] + self.board[35+3])
+		self.wState[42] = (self.board[36] + self.board[36+1] + self.board[36+2] + self.board[36+3])
+		self.wState[43] = (self.board[37] + self.board[37+1] + self.board[37+2] + self.board[37+3])
+		self.wState[44] = (self.board[38] + self.board[38+1] + self.board[38+2] + self.board[38+3])
 
 		# # Positive diagonal
 		# for i in range(4):
 		# 	self.wState[] = (self.board[i] + self.board[i+8] + self.board[i+16] + self.board[i+24])
-		self.wState[34] = (self.board[0] + self.board[0+8] + self.board[0+16] + self.board[0+24])
-		self.wState[35] = (self.board[1] + self.board[1+8] + self.board[1+16] + self.board[1+24])
-		self.wState[36] = (self.board[2] + self.board[2+8] + self.board[2+16] + self.board[2+24])
-		self.wState[37] = (self.board[3] + self.board[3+8] + self.board[3+16] + self.board[3+24])
+		self.wState[45] = (self.board[0] + self.board[0+8] + self.board[0+16] + self.board[0+24])
+		self.wState[46] = (self.board[1] + self.board[1+8] + self.board[1+16] + self.board[1+24])
+		self.wState[47] = (self.board[2] + self.board[2+8] + self.board[2+16] + self.board[2+24])
+		self.wState[48] = (self.board[3] + self.board[3+8] + self.board[3+16] + self.board[3+24])
 
 		# for i in range(7, 11):
 		# 	self.wState[] = (self.board[i] + self.board[i+8] + self.board[i+16] + self.board[i+24])
-		self.wState[38] = (self.board[7] + self.board[7+8] + self.board[7+16] + self.board[7+24])
-		self.wState[39] = (self.board[8] + self.board[8+8] + self.board[8+16] + self.board[8+24])
-		self.wState[40] = (self.board[9] + self.board[9+8] + self.board[9+16] + self.board[9+24])
-		self.wState[41] = (self.board[10] + self.board[10+8] + self.board[10+16] + self.board[10+24])
+		self.wState[49] = (self.board[7] + self.board[7+8] + self.board[7+16] + self.board[7+24])
+		self.wState[50] = (self.board[8] + self.board[8+8] + self.board[8+16] + self.board[8+24])
+		self.wState[51] = (self.board[9] + self.board[9+8] + self.board[9+16] + self.board[9+24])
+		self.wState[52] = (self.board[10] + self.board[10+8] + self.board[10+16] + self.board[10+24])
+
+		self.wState[53] = (self.board[14] + self.board[14+8] + self.board[14+16] + self.board[14+24])
+		self.wState[54] = (self.board[15] + self.board[15+8] + self.board[15+16] + self.board[15+24])
+		self.wState[55] = (self.board[16] + self.board[16+8] + self.board[16+16] + self.board[16+24])
+		self.wState[56] = (self.board[17] + self.board[17+8] + self.board[17+16] + self.board[17+24])
 
 		# # Negative diagonal
 		# for i in range(6, 2, -1):
 		# 	self.wState[] = (self.board[i] + self.board[i+6] + self.board[i+12] + self.board[i+18])
-		self.wState[42] = (self.board[6] + self.board[6+6] + self.board[6+12] + self.board[6+18])
-		self.wState[43] = (self.board[5] + self.board[5+6] + self.board[5+12] + self.board[5+18])
-		self.wState[44] = (self.board[4] + self.board[4+6] + self.board[4+12] + self.board[4+18])
-		self.wState[45] = (self.board[3] + self.board[3+6] + self.board[3+12] + self.board[3+18])
+		self.wState[57] = (self.board[6] + self.board[6+6] + self.board[6+12] + self.board[6+18])
+		self.wState[58] = (self.board[5] + self.board[5+6] + self.board[5+12] + self.board[5+18])
+		self.wState[59] = (self.board[4] + self.board[4+6] + self.board[4+12] + self.board[4+18])
+		self.wState[60] = (self.board[3] + self.board[3+6] + self.board[3+12] + self.board[3+18])
 
 		# for i in range(13, 9, -1):
 		# 	self.wState[] = (self.board[i] + self.board[i+6] + self.board[i+12] + self.board[i+18])
-		self.wState[46] = (self.board[13] + self.board[13+6] + self.board[13+12] + self.board[13+18])
-		self.wState[47] = (self.board[12] + self.board[12+6] + self.board[12+12] + self.board[12+18])
-		self.wState[48] = (self.board[11] + self.board[11+6] + self.board[11+12] + self.board[11+18])
-		self.wState[49] = (self.board[10] + self.board[10+6] + self.board[10+12] + self.board[10+18])
+		self.wState[61] = (self.board[13] + self.board[13+6] + self.board[13+12] + self.board[13+18])
+		self.wState[62] = (self.board[12] + self.board[12+6] + self.board[12+12] + self.board[12+18])
+		self.wState[63] = (self.board[11] + self.board[11+6] + self.board[11+12] + self.board[11+18])
+		self.wState[64] = (self.board[10] + self.board[10+6] + self.board[10+12] + self.board[10+18])
+
+		self.wState[65] = (self.board[20] + self.board[20+6] + self.board[20+12] + self.board[20+18])
+		self.wState[66] = (self.board[19] + self.board[19+6] + self.board[19+12] + self.board[19+18])
+		self.wState[67] = (self.board[18] + self.board[18+6] + self.board[18+12] + self.board[18+18])
+		self.wState[68] = (self.board[17] + self.board[17+6] + self.board[17+12] + self.board[17+18])
 
 		for i in range(len(self.wState)):
 			if self.wState[i] == 12:             # D-Val
 				return (1, i)                   # D-Val
 			if self.wState[i] == -8:            # D-Val
 				return (2, i)                   # D-Val
-		if self.count == 35:
+		if self.count == 41:
 			return (0, None)
 		return (-1, None)
 
