@@ -7,7 +7,7 @@ from itertools import cycle
 from sys import argv
 from TTTBoard import TTTBoard
 
-def getTrainingData(noOfGames):
+def getTrainingData(noOfGames, dataGenFlag, inpTrainFile, outTrainFile):
 
     # Final Stats
     xWins = 0
@@ -52,6 +52,13 @@ def getTrainingData(noOfGames):
                     draws += 1
                     drawTurns += b.board[0]
                     drawwStateSums += b.getwStateSum()
+                    if dataGenFlag == 2:
+                        if b.board[0] == 9:
+                            inpTrainBuffer.pop()
+                            inpTrainList.extend(inpTrainBuffer)
+                            outTrainList.extend(outinpTrainBuffer)
+                            totalAcceptedGames += 1
+                            totalAcceptedTurns += b.board[0]
                     b.resetBoard()
                     break
                 elif status == 1:
@@ -59,13 +66,13 @@ def getTrainingData(noOfGames):
                     xWins += 1
                     xWinTurns += b.board[0]
                     xWinwStateSums += b.getwStateSum()
-                    if b.board[0] == 9:
-                    # if b.board[0] < 6:		# and b.getwStateSum() > 16:
-                        inpTrainBuffer.pop()
-                        inpTrainList.extend(inpTrainBuffer)
-                        outTrainList.extend(outinpTrainBuffer)
-                        totalAcceptedGames += 1
-                        totalAcceptedTurns += b.board[0]
+                    if dataGenFlag == 1:
+                        if b.board[0] < 6:		# and b.getwStateSum() > 16:
+                            inpTrainBuffer.pop()
+                            inpTrainList.extend(inpTrainBuffer)
+                            outTrainList.extend(outinpTrainBuffer)
+                            totalAcceptedGames += 1
+                            totalAcceptedTurns += b.board[0]
                     b.resetBoard()
                     break
                 elif status == 2:
@@ -112,15 +119,15 @@ def getTrainingData(noOfGames):
 
     xInpArray = np.array(xInpList)
     xOutArray = np.array(xOutList)
-    np.savetxt('__data__/xInpTrainData-Defensive.txt', xInpArray, fmt='%d')
-    np.savetxt('__data__/xOutTrainData-Defensive.txt', xOutArray, fmt='%d')
+    np.savetxt('__data__/' + inpTrainFile, xInpArray, fmt='%d')
+    np.savetxt('__data__/' + outTrainFile, xOutArray, fmt='%d')
 
-    print("Files xTrainData-Defensive.txt and xTestData-Defensive.txt written.\n")
+    print(f"Files {inpTrainFile} and {outTrainFile} written.\n")
 
 if __name__ == '__main__':
 
-    if len(argv) < 2:
-        print("Provide no. of games.")
+    if len(argv) != 5:
+        print("Provide no. of games, dataGenFlag (1|2), inpTrainFile, outTrainFile")
     else:
         startTime = time()
 
@@ -129,6 +136,6 @@ if __name__ == '__main__':
         playerNumToggler = cycle([3, -2])                   # D-Val
         seed(urandom(128))
 
-        getTrainingData(int(argv[1]))
+        getTrainingData(int(argv[1]), int(argv[2]), argv[3], argv[4])
 
         print(f"Time taken: {time() - startTime}s\n")
