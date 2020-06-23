@@ -107,4 +107,4 @@ class TTTBoard:
         print("\nGAME[0]: Tic-Tac-Toe\n")
         print("INFO[0]: The positions on the board are numbered like the Numpad, i.e.:")
         print("          7 | 8 | 9 \n         ---+---+---\n          4 | 5 | 6 \n         ---+---+---\n          1 | 2 | 3 ")
-        print("INFO[1]: Player X goes first\n")
+        print("\nINFO[1]: Player O is Human, Player X is RL-Agent.\n         Player O goes first.\n         But, if Player O wins a match, Player X goes first the next match.")

@@ -52,15 +52,15 @@ if __name__ == "__main__":
 			if b.board[0] > 4:
 				status = b.winnerCheck()
 				if status == 0:
-					print("Game Draw!")
+					# print("Game Draw!")
 					draws += 1
 					break
 				elif status == 1:
-					print("Player O Won!")
+					# print("Player O Won!")
 					oWins += 1
 					break
 				elif status == 2:
-					print("Player X Won!")
+					# print("Player X Won!")
 					xWins += 1
 					break
 			
@@ -71,28 +71,28 @@ if __name__ == "__main__":
 			if cPNum == 1:
 				position = choice(emptyPositions)
 				emptyPositions.remove(position)
-				print(f"Player {cPChar}: {position}")
+				# print(f"Player {cPChar}: {position}")
 				prevState = tuple(b.board[1:])
 				b.makeMove(cPNum, position)
 				currState = tuple(b.board[1:])
 				# Initilize new state (1st state)
 				agent.initializeState(tuple(b.board[1:]), b)
 				agent.updateStateValue(prevState, currState, b)
-				b.printBoard()
-				print()
+				# b.printBoard()
+				# print()
 			# If Player X's turn, ValueFuction.
 			elif cPNum == 4:
-				position = agent.getBestPosition(b)
-				print(f"Best Position: {position}")
+				position = agent.makeMove(b)
+				# print(f"Best Position: {position}")
 				emptyPositions.remove(position)
-				print(f"Player {cPChar}: {position}")
+				# print(f"Player {cPChar}: {position}")
 				prevState = tuple(b.board[1:])
 				b.makeMove(cPNum, position)
 				currState = tuple(b.board[1:])
 				agent.updateStateValue(prevState, currState, b)
 				agent.initializeState(tuple(b.board[1:]), b)
-				b.printBoard()
-				print()
+				# b.printBoard()
+				# print()
 		
 		if i % 100 == 0:
 			gameNoPlot.append(i)
