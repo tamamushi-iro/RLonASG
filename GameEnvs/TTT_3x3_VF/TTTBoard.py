@@ -57,9 +57,9 @@ class TTTBoard:
         elif stateArr[8] == stateArr[5] == stateArr[2] != 0:
             return 1 if stateArr[8] == 1 else 2
         elif stateArr[9] == stateArr[6] == stateArr[3] != 0:
-            return 1 if self.board[9] == 1 else 2
+            return 1 if stateArr[9] == 1 else 2
         elif stateArr[7] == stateArr[5] == stateArr[3] != 0:
-            return 1 if self.board[7] == 1 else 2
+            return 1 if stateArr[7] == 1 else 2
         elif stateArr[9] == stateArr[5] == stateArr[1] != 0:
             return 1 if stateArr[9] == 1 else 2
         

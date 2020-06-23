@@ -1,5 +1,3 @@
-from random import seed, choice
-from os import urandom
 from time import time
 from sys import argv
 from itertools import cycle
@@ -17,7 +15,6 @@ if __name__ == "__main__":
 		noOfGames = int(argv[1])
 
 	startTime = time()
-	seed(urandom(128))
 
 	b = TTTBoard()
 	playerCharToggler = cycle(['O', 'X'])				# D-Char
@@ -69,9 +66,9 @@ if __name__ == "__main__":
 			
 			# If Player O's turn, Random.
 			if cPNum == 1:
-				position = choice(emptyPositions)
+				print(f"Player {cPChar}: ", end='')
+				position = int(input())
 				emptyPositions.remove(position)
-				print(f"Player {cPChar}: {position}")
 				prevState = tuple(b.board[1:])
 				b.makeMove(cPNum, position)
 				currState = tuple(b.board[1:])
