@@ -1,6 +1,3 @@
-from random import seed, choice
-from os import urandom
-from time import time
 from sys import argv
 from itertools import cycle
 import statistics
@@ -16,19 +13,20 @@ if __name__ == "__main__":
 	else:
 		noOfGames = int(argv[1])
 
-	startTime = time()
-	seed(urandom(128))
-
 	b = TTTBoard()
+	b.printInfo()
 	playerCharToggler = cycle(['O', 'X'])				# D-Char
 	playerNumToggler = cycle([1, 4])					# D-Val
 
-	agent = Agent('X', 4, b)
+	agentX = Agent('X', 4, b, verbose=True)
+	agentO = Agent('O', 1, b, verbose=True)
 
-	b.printInfo()
+	agentX.loadVFTable("xRCvVF")
+	# agentO.loadVFTable("oRCvVF")
 
 	# Initilize Empty State
-	agent.initializeState(tuple(b.board[1:]), b)
+	agentX.initializeState(tuple(b.board[1:]), b)
+	agentO.initializeState(tuple(b.board[1:]), b)
 
 	xWins = 0
 	xWinsPrev = 0
@@ -43,8 +41,6 @@ if __name__ == "__main__":
 
 	for i in range(noOfGames):
 
-		# print(f"Game No.: {i}")
-		# print(f"stateCount: {agent.stateCount}")
 		emptyPositions = list(range(1, 10))
 
 		while b.board[0] < 10:
@@ -52,72 +48,75 @@ if __name__ == "__main__":
 			if b.board[0] > 4:
 				status = b.winnerCheck()
 				if status == 0:
-					# print("Game Draw!")
+					print("Game Draw!")
 					draws += 1
 					break
 				elif status == 1:
-					# print("Player O Won!")
+					print("Player O Won!")
 					oWins += 1
 					break
 				elif status == 2:
-					# print("Player X Won!")
+					print("Player X Won!")
 					xWins += 1
 					break
 			
 			cPChar = next(playerCharToggler)
 			cPNum = next(playerNumToggler)
 			
-			# If Player O's turn, Random.
+			# If Player O's turn, ValueFunction.
 			if cPNum == 1:
-				position = choice(emptyPositions)
+				position = agentO.makeMove(b)
 				emptyPositions.remove(position)
-				# print(f"Player {cPChar}: {position}")
+				print(f"Player {cPChar}: {position}")
 				prevState = tuple(b.board[1:])
 				b.makeMove(cPNum, position)
 				currState = tuple(b.board[1:])
-				# Initilize new state (1st state)
-				agent.initializeState(tuple(b.board[1:]), b)
-				agent.updateStateValue(prevState, currState, b)
-				# b.printBoard()
-				# print()
+				# Initilize new states
+				agentO.initializeState(tuple(b.board[1:]), b)
+				agentO.updateStateValue(prevState, currState, b)
+				agentX.initializeState(tuple(b.board[1:]), b)
+				agentX.updateStateValue(prevState, currState, b)
+				b.printBoard()
+				print()
 			# If Player X's turn, ValueFuction.
 			elif cPNum == 4:
-				position = agent.makeMove(b)
-				# print(f"Best Position: {position}")
+				position = agentX.makeMove(b)
 				emptyPositions.remove(position)
-				# print(f"Player {cPChar}: {position}")
+				print(f"Player {cPChar}: {position}")
 				prevState = tuple(b.board[1:])
 				b.makeMove(cPNum, position)
 				currState = tuple(b.board[1:])
-				agent.updateStateValue(prevState, currState, b)
-				agent.initializeState(tuple(b.board[1:]), b)
-				# b.printBoard()
-				# print()
+				# Initilize new states
+				agentO.initializeState(tuple(b.board[1:]), b)
+				agentO.updateStateValue(prevState, currState, b)
+				agentX.initializeState(tuple(b.board[1:]), b)
+				agentX.updateStateValue(prevState, currState, b)
+				b.printBoard()
+				print()
 		
-		if i % 1000 == 0:
-			print(f"Game No.: {i} and stateCount: {agent.stateCount}")
+		if i % 100 == 0:
+			print(f"\nGame No.: {i} and xstateCount: {agentX.stateCount}")
 			gameNoPlot.append(i)
-			xWinsPlot.append((xWins - xWinsPrev) / 1000)
-			oWinsPlot.append((oWins - oWinsPrev) / 1000)
-			drawsPlot.append((draws - drawsPrev) / 1000)
+			xWinsPlot.append((xWins - xWinsPrev) / 100)
+			oWinsPlot.append((oWins - oWinsPrev) / 100)
+			drawsPlot.append((draws - drawsPrev) / 100)
 			xWinsPrev = xWins
 			oWinsPrev = oWins
 			drawsPrev = draws
 
 		b.resetBoard()
 	
-	agent.saveVFTable("xRCvVF")
-
-	print(f"\nTime taken: {time() - startTime} seconds")
+	agentX.saveVFTable("xRCvVF")
+	# agentO.saveVFTable("oRCvVF")
 
 	print(f"\nX-Win Probability: {statistics.mean(xWinsPlot)}")
 	print(f"O-Win Probatility: {statistics.mean(oWinsPlot)}")
 	print(f"Draws Probability: {statistics.mean(drawsPlot)}\n")
 
-	plt.title("TD(0) Trained RL Agent vs Random Agent")
+	plt.title("TD(0) Trained RL Agent vs Trained RL Agent")
 	plt.ylabel('Win Probability')
 	plt.plot(gameNoPlot, xWinsPlot, label="X-Win RL Agent")
-	plt.plot(gameNoPlot, oWinsPlot, label="O-Win Random")
+	plt.plot(gameNoPlot, oWinsPlot, label="O-Win RL Agent")
 	plt.plot(gameNoPlot, drawsPlot, label="Draws")
 
 	plt.legend()

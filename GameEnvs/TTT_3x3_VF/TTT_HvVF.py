@@ -1,7 +1,6 @@
-from time import time
 from sys import argv
 from itertools import cycle
-from array import array
+import statistics
 from TTTBoard import TTTBoard
 from TTTAgent import Agent
 import matplotlib.pyplot as plt
@@ -14,15 +13,14 @@ if __name__ == "__main__":
 	else:
 		noOfGames = int(argv[1])
 
-	startTime = time()
-
 	b = TTTBoard()
+	b.printInfo()
 	playerCharToggler = cycle(['O', 'X'])				# D-Char
 	playerNumToggler = cycle([1, 4])					# D-Val
 
 	agent = Agent('X', 4, b, verbose=True)
 
-	b.printInfo()
+	agent.loadVFTable("RCvVF")
 
 	# Initilize Empty State
 	agent.initializeState(tuple(b.board[1:]), b)
@@ -97,17 +95,23 @@ if __name__ == "__main__":
 				b.printBoard()
 				print()
 		
-		if i % 10 == 0:
+		if i % 5 == 0:
 			gameNoPlot.append(i)
-			xWinsPlot.append((xWins - xWinsPrev) / 10)
-			oWinsPlot.append((oWins - oWinsPrev) / 10)
-			drawsPlot.append((draws - drawsPrev) / 10)
+			xWinsPlot.append((xWins - xWinsPrev) / 5)
+			oWinsPlot.append((oWins - oWinsPrev) / 5)
+			drawsPlot.append((draws - drawsPrev) / 5)
 			xWinsPrev = xWins
 			oWinsPrev = oWins
 			drawsPrev = draws
 
 		b.resetBoard()
 	
+	agent.saveVFTable("RCvVF")
+
+	print(f"\nX-Win Probability: {statistics.mean(xWinsPlot)}")
+	print(f"O-Win Probatility: {statistics.mean(oWinsPlot)}")
+	print(f"Draws Probability: {statistics.mean(drawsPlot)}\n")
+
 	plt.title("TD(0) Trained RL Agent vs Human")
 	plt.ylabel('Win Probability')
 	plt.plot(gameNoPlot, xWinsPlot, label="X-Win RL Agent")
