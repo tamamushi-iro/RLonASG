@@ -24,16 +24,8 @@ if __name__ == "__main__":
 	# Initilize Empty State
 	agent.initializeState(tuple(b.board[1:]), b)
 
-	xWins = 0
-	xWinsPrev = 0
-	xWinsPlot = []
-	oWins = 0
-	oWinsPrev = 0
-	oWinsPlot = []
-	draws = 0
-	drawsPrev = 0
-	drawsPlot = []
-	gameNoPlot = []
+	xWins = xWinsPrev = oWins = oWinsPrev = draws = drawsPrev = 0
+	xWinsPlot = oWinsPlot = drawsPlot = gameNoPlot = []
 
 	for i in range(noOfGames):
 
