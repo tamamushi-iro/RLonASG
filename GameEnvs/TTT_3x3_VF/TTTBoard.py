@@ -23,7 +23,7 @@ class TTTBoard:
             return False
 
     # Returns 1 if O Won, 2 if X Won, with their winning state (wState), and 0 if Draw.
-    # Call winnerCheck only if turnCount > 4    # D-Main
+    # Call winnerCheck/State only if turnCount > 4    # D-Main
     def winnerCheck(self):               # D-Val (s)
         if self.board[7] == self.board[8] == self.board[9] != 0:
             return 1 if self.board[7] == 1 else 2

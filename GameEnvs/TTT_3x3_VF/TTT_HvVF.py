@@ -97,11 +97,11 @@ if __name__ == "__main__":
 				b.printBoard()
 				print()
 		
-		if i % 5 == 0:
+		if i % 10 == 0:
 			gameNoPlot.append(i)
-			xWinsPlot.append((xWins - xWinsPrev) / 5)
-			oWinsPlot.append((oWins - oWinsPrev) / 5)
-			drawsPlot.append((draws - drawsPrev) / 5)
+			xWinsPlot.append((xWins - xWinsPrev) / 10)
+			oWinsPlot.append((oWins - oWinsPrev) / 10)
+			drawsPlot.append((draws - drawsPrev) / 10)
 			xWinsPrev = xWins
 			oWinsPrev = oWins
 			drawsPrev = draws
@@ -109,7 +109,7 @@ if __name__ == "__main__":
 		b.resetBoard()
 	
 	plt.title("TD(0) Trained RL Agent vs Human")
-	plt.ylabel('Win Probability (per 100 games)')
+	plt.ylabel('Win Probability')
 	plt.plot(gameNoPlot, xWinsPlot, label="X-Win RL Agent")
 	plt.plot(gameNoPlot, oWinsPlot, label="O-Win Human")
 	plt.plot(gameNoPlot, drawsPlot, label="Draws")
