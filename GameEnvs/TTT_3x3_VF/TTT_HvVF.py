@@ -1,6 +1,5 @@
 from sys import argv
 from itertools import cycle
-import statistics
 from TTTBoard import TTTBoard
 from TTTAgent import Agent
 import matplotlib.pyplot as plt
@@ -108,9 +107,9 @@ if __name__ == "__main__":
 	
 	agent.saveVFTable("RCvVF")
 
-	print(f"\nX-Win Probability: {statistics.mean(xWinsPlot)}")
-	print(f"O-Win Probatility: {statistics.mean(oWinsPlot)}")
-	print(f"Draws Probability: {statistics.mean(drawsPlot)}\n")
+	print(f"\nX-Win Probability: {xWins/noOfGames}")
+	print(f"O-Win Probatility: {oWins/noOfGames}")
+	print(f"Draws Probability: {draws/noOfGames}\n")
 
 	plt.title("TD(0) Trained RL Agent vs Human")
 	plt.ylabel('Win Probability')

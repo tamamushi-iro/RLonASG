@@ -3,7 +3,6 @@ from os import urandom
 from time import time
 from sys import argv
 from itertools import cycle
-import statistics
 from TTTBoard import TTTBoard
 from TTTAgent import Agent
 import matplotlib.pyplot as plt
@@ -30,16 +29,8 @@ if __name__ == "__main__":
 	# Initilize Empty State
 	agent.initializeState(tuple(b.board[1:]), b)
 
-	xWins = 0
-	xWinsPrev = 0
-	xWinsPlot = []
-	oWins = 0
-	oWinsPrev = 0
-	oWinsPlot = []
-	draws = 0
-	drawsPrev = 0
-	drawsPlot = []
-	gameNoPlot = []
+	xWins = xWinsPrev = oWins = oWinsPrev = draws = drawsPrev = 0
+	xWinsPlot = oWinsPlot = drawsPlot = gameNoPlot = []
 
 	for i in range(noOfGames):
 
@@ -106,13 +97,13 @@ if __name__ == "__main__":
 
 		b.resetBoard()
 	
-	agent.saveVFTable("xRCvVF")
+	agent.saveVFTable("xVFTable")
 
 	print(f"\nTime taken: {time() - startTime} seconds")
 
-	print(f"\nX-Win Probability: {statistics.mean(xWinsPlot)}")
-	print(f"O-Win Probatility: {statistics.mean(oWinsPlot)}")
-	print(f"Draws Probability: {statistics.mean(drawsPlot)}\n")
+	print(f"\nX-Win Probability: {xWins/noOfGames}")
+	print(f"O-Win Probatility: {oWins/noOfGames}")
+	print(f"Draws Probability: {draws/noOfGames}\n")
 
 	plt.title("TD(0) Trained RL Agent vs Random Agent")
 	plt.ylabel('Win Probability')
