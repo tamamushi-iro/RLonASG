@@ -29,8 +29,16 @@ if __name__ == "__main__":
 	# Initilize Empty State
 	agent.initializeState(tuple(b.board[1:]), b)
 
-	xWins = xWinsPrev = oWins = oWinsPrev = draws = drawsPrev = 0
-	xWinsPlot = oWinsPlot = drawsPlot = gameNoPlot = []
+	xWins = 0
+	xWinsPrev = 0
+	xWinsPlot = []
+	oWins = 0
+	oWinsPrev = 0
+	oWinsPlot = []
+	draws = 0
+	drawsPrev = 0
+	drawsPlot = []
+	gameNoPlot = []
 
 	for i in range(noOfGames):
 
@@ -85,12 +93,12 @@ if __name__ == "__main__":
 				# b.printBoard()
 				# print()
 		
-		if i % 1000 == 0:
+		if i % 100 == 0:
 			print(f"Game No.: {i} and stateCount: {agent.stateCount}")
 			gameNoPlot.append(i)
-			xWinsPlot.append((xWins - xWinsPrev) / 1000)
-			oWinsPlot.append((oWins - oWinsPrev) / 1000)
-			drawsPlot.append((draws - drawsPrev) / 1000)
+			xWinsPlot.append((xWins - xWinsPrev) / 100)
+			oWinsPlot.append((oWins - oWinsPrev) / 100)
+			drawsPlot.append((draws - drawsPrev) / 100)
 			xWinsPrev = xWins
 			oWinsPrev = oWins
 			drawsPrev = draws

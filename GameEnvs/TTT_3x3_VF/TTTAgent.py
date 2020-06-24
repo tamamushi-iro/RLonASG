@@ -20,11 +20,11 @@ class Agent:
 		# Initialize all possible next/curr states
 		for state in possibleStates:
 			self.initializeState(state, board)
-		maxValue = -100
-		positionIndex = -1
 		if random() < self.epsilon:
 			if self.verbose: print("Exploring...")
 			return choice(positions)
+		maxValue = -100
+		positionIndex = -1
 		for i in range(len(possibleStates)):
 			if self.stateValueTable[possibleStates[i]] > maxValue:
 				if self.verbose: print(f"[{self.pChar}]: {possibleStates[i]}: {self.stateValueTable[possibleStates[i]]}")
@@ -60,7 +60,7 @@ class Agent:
 		# print(f"initialStateValues board: {stateArr}")
 		# print(f"initialStateValues status: {status}")
 		if status == 0:								# if Draw
-			return 0
+			return 1
 		elif status == 1:							# if Player O Wins
 			return 1 if self.pNum == 1 else 0
 		elif status == 2:							# if Player X Wins

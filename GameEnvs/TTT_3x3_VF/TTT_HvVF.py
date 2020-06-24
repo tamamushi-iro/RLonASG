@@ -19,13 +19,21 @@ if __name__ == "__main__":
 
 	agent = Agent('X', 4, b, verbose=True)
 
-	agent.loadVFTable("RCvVF")
+	agent.loadVFTable("xVFTable")
 
 	# Initilize Empty State
 	agent.initializeState(tuple(b.board[1:]), b)
 
-	xWins = xWinsPrev = oWins = oWinsPrev = draws = drawsPrev = 0
-	xWinsPlot = oWinsPlot = drawsPlot = gameNoPlot = []
+	xWins = 0
+	xWinsPrev = 0
+	xWinsPlot = []
+	oWins = 0
+	oWinsPrev = 0
+	oWinsPlot = []
+	draws = 0
+	drawsPrev = 0
+	drawsPlot = []
+	gameNoPlot = []
 
 	for i in range(noOfGames):
 

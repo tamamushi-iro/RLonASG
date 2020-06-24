@@ -17,8 +17,8 @@ if __name__ == "__main__":
 	playerCharToggler = cycle(['O', 'X'])				# D-Char
 	playerNumToggler = cycle([1, 4])					# D-Val
 
-	agentX = Agent('X', 4, b, verbose=True)
-	agentO = Agent('O', 1, b, verbose=True)
+	agentX = Agent('X', 4, b)
+	agentO = Agent('O', 1, b)
 
 	agentX.loadVFTable("xVFTable")
 	agentO.loadVFTable("oVFTable")
@@ -27,8 +27,16 @@ if __name__ == "__main__":
 	agentX.initializeState(tuple(b.board[1:]), b)
 	agentO.initializeState(tuple(b.board[1:]), b)
 
-	xWins = xWinsPrev = oWins = oWinsPrev = draws = drawsPrev = 0
-	xWinsPlot = oWinsPlot = drawsPlot = gameNoPlot = []
+	xWins = 0
+	xWinsPrev = 0
+	xWinsPlot = []
+	oWins = 0
+	oWinsPrev = 0
+	oWinsPlot = []
+	draws = 0
+	drawsPrev = 0
+	drawsPlot = []
+	gameNoPlot = []
 
 	for i in range(noOfGames):
 
@@ -39,15 +47,15 @@ if __name__ == "__main__":
 			if b.board[0] > 4:
 				status = b.winnerCheck()
 				if status == 0:
-					print("Game Draw!")
+					# print("Game Draw!")
 					draws += 1
 					break
 				elif status == 1:
-					print("Player O Won!")
+					# print("Player O Won!")
 					oWins += 1
 					break
 				elif status == 2:
-					print("Player X Won!")
+					# print("Player X Won!")
 					xWins += 1
 					break
 			
@@ -58,7 +66,7 @@ if __name__ == "__main__":
 			if cPNum == 1:
 				position = agentO.makeMove(b)
 				emptyPositions.remove(position)
-				print(f"Player {cPChar}: {position}")
+				# print(f"Player {cPChar}: {position}")
 				prevState = tuple(b.board[1:])
 				b.makeMove(cPNum, position)
 				currState = tuple(b.board[1:])
@@ -67,13 +75,13 @@ if __name__ == "__main__":
 				agentO.updateStateValue(prevState, currState, b)
 				agentX.initializeState(tuple(b.board[1:]), b)
 				agentX.updateStateValue(prevState, currState, b)
-				b.printBoard()
-				print()
+				# b.printBoard()
+				# print()
 			# If Player X's turn, ValueFuction.
 			elif cPNum == 4:
 				position = agentX.makeMove(b)
 				emptyPositions.remove(position)
-				print(f"Player {cPChar}: {position}")
+				# print(f"Player {cPChar}: {position}")
 				prevState = tuple(b.board[1:])
 				b.makeMove(cPNum, position)
 				currState = tuple(b.board[1:])
@@ -82,11 +90,11 @@ if __name__ == "__main__":
 				agentO.updateStateValue(prevState, currState, b)
 				agentX.initializeState(tuple(b.board[1:]), b)
 				agentX.updateStateValue(prevState, currState, b)
-				b.printBoard()
-				print()
+				# b.printBoard()
+				# print()
 		
 		if i % 100 == 0:
-			print(f"\nGame No.: {i} and xstateCount: {agentX.stateCount}")
+			print(f"Game No.: {i} and xstateCount: {agentX.stateCount}")
 			gameNoPlot.append(i)
 			xWinsPlot.append((xWins - xWinsPrev) / 100)
 			oWinsPlot.append((oWins - oWinsPrev) / 100)
