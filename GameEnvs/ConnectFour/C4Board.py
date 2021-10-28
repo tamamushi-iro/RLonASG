@@ -21,9 +21,9 @@ class C4Board:
 		print("| 0 | 1 | 2 | 3 | 4 | 5 | 6 |")
 		print("+---+---+---+---+---+---+---+")
 		for i in range(42):
-			if i in(6, 13, 20, 27, 34):
+			if i in(6, 13, 20, 27, 34, 41):
 				print(" " + pBoard[i] + " |")
-			elif i in (0, 7, 14, 21, 28):
+			elif i in (0, 7, 14, 21, 28, 35):
 				print("| " + pBoard[i] + "  ", end="")
 			else:
 				print(" " + pBoard[i] + "  ", end="")
@@ -94,11 +94,11 @@ class C4Board:
 		
 		self.wState[14] = (self.board[14] + self.board[14+7] + self.board[14+14] + self.board[14+21])
 		self.wState[15] = (self.board[15] + self.board[15+7] + self.board[15+14] + self.board[15+21])
-		self.wState[16] = (self.board[17] + self.board[16+7] + self.board[16+14] + self.board[16+21])
-		self.wState[17] = (self.board[18] + self.board[17+7] + self.board[17+14] + self.board[17+21])
-		self.wState[18] = (self.board[19] + self.board[18+7] + self.board[18+14] + self.board[18+21])
-		self.wState[19] = (self.board[20] + self.board[19+7] + self.board[19+14] + self.board[19+21])
-		self.wState[20] = (self.board[21] + self.board[20+7] + self.board[20+14] + self.board[20+21])
+		self.wState[16] = (self.board[16] + self.board[16+7] + self.board[16+14] + self.board[16+21])
+		self.wState[17] = (self.board[17] + self.board[17+7] + self.board[17+14] + self.board[17+21])
+		self.wState[18] = (self.board[18] + self.board[18+7] + self.board[18+14] + self.board[18+21])
+		self.wState[19] = (self.board[19] + self.board[19+7] + self.board[19+14] + self.board[19+21])
+		self.wState[20] = (self.board[20] + self.board[20+7] + self.board[20+14] + self.board[20+21])
 
 		# Horizontal
 		# for i in range(4):
@@ -210,4 +210,3 @@ class C4Board:
 		print("\n---+---+---+---+---+---+---+")
 		print("INFO[1]: Player X goes first\n")
 
-		
