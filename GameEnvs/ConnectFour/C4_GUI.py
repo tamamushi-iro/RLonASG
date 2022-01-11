@@ -54,17 +54,17 @@ def play(pos):
             canvas.itemconfigure(slots[i], fill="yellow")
 
     if c4.count>6:
-        status, wSindex = c4.checkWin()
+        status = c4.checkWin()
         if status == 0:
             print("Game Draw!\n")
             canvas.create_text(350,300,text="Game Draw", fill="black", font=('Helvetica 24 bold'))
             buttonDisabler()
         elif status == 1:
-            print(f"Player X Wins! (wState[{wSindex}]: {c4.wState[wSindex]})\n")
+            print(f"Player X Wins!\n")
             canvas.create_text(350,300,text="Yellow Won", fill="black", font=('Helvetica 24 bold'))
             buttonDisabler()
         elif status == 2:
-            print(f"Player O Wins! (wState[{wSindex}]: {c4.wState[wSindex]})\n")
+            print(f"Player O Wins!\n")
             canvas.create_text(350,300,text="Red Won", fill="black", font=('Helvetica 24 bold'))
             buttonDisabler()
 

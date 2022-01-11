@@ -2,12 +2,63 @@ from array import array
 import sys
 
 class C4Board:
-	board = array('i', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-	wState = array('i', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-	count = 0
+	def __init__(self) -> None:
+		self.board = array('i', [0] * 42)
+		self.count = 0
+		self.lastPlayedPosition = -1
+		# Horizontal, Vertical, Left Diag (/), Right Diag (\)
+		self.winCheckDict = {
+			0: ((0, 1, 2, 3), (0, 7, 14, 21), (0, 8, 16, 24)),
+			1: ((0, 1, 2, 3), (1, 2, 3, 4), (1, 8, 15, 22), (1, 9, 17, 25)),
+			2: ((0, 1, 2, 3), (1, 2, 3, 4), (2, 3, 4, 5), (2, 9, 16, 23), (2, 10, 18, 26)),
+			3: ((0, 1, 2, 3), (1, 2, 3, 4), (2, 3, 4, 5), (3, 4, 5, 6), (3, 10, 17, 24), (3, 9, 15, 21), (3, 11, 19, 27)),
+			4: ((1, 2, 3, 4), (2, 3, 4, 5), (3, 4, 5, 6), (4, 11, 18, 25), (4, 10, 16, 22)),
+			5: ((2, 3, 4, 5), (3, 4, 5, 6), (5, 12, 19, 26), (5, 11, 17, 23)),
+			6: ((3, 4, 5, 6), (6, 13, 20, 27), (6, 12, 18, 24)),
 
+			7: ((7, 8, 9, 10), (7, 14, 21, 28), (7, 15, 23, 31)),
+			8: ((7, 8, 9, 10), (8, 9, 10, 11), (8, 15, 22, 29), (8, 16, 24, 32)),
+			9: ((7, 8, 9, 10), (8, 9, 10, 11), (9, 10, 11, 12), (9, 16, 23, 30), (3, 9, 15, 21), (1, 9, 17, 25), (9, 17, 25, 33)),
+			10: ((7, 8, 9, 10), (8, 9, 10, 11), (9, 10, 11, 12), (10, 11, 12, 13), (10, 17, 24, 31), (4, 10, 16, 22), (10, 16, 22, 28), (2, 10, 18, 26), (10, 18, 26, 34)),
+			11: ((8, 9, 10, 11), (9, 10, 11, 12), (10, 11, 12, 13), (11, 18, 25, 32), (5, 11, 17, 23), (11, 17, 23, 29), (3, 11, 19, 27)),
+			12: ((9, 10, 11, 12), (10, 11, 12, 13), (12, 19, 26, 33), (6, 12, 18, 24), (12, 18, 24, 30)),
+			13: ((10, 11, 12, 13), (13, 20, 27, 34), (13, 19, 25, 31)),
+
+			14: ((14, 15, 16, 17), (14, 21, 28, 35), (14, 22, 30, 38)),
+			15: ((14, 15, 16, 17), (15, 16, 17, 18), (15, 22, 29, 36), (3, 9, 15, 21), (7, 15, 23, 31), (15, 23, 31, 39)),
+			16: ((14, 15, 16, 17), (15, 16, 17, 18), (16, 17, 18, 19), (16, 23, 30, 37), (4, 10, 16, 22), (10, 16, 22, 28), (0, 8, 16, 24), (8, 16, 24, 32), (16, 24, 32, 40)),
+			17: ((14, 15, 16, 17), (15, 16, 17, 18), (16, 17, 18, 19), (17, 18, 19, 20), (17, 24, 31, 38), (5, 11, 17, 23), (11, 17, 23, 29), (17, 23, 29, 35), (1, 9, 17, 25), (9, 17, 25, 33), (17, 25, 33, 41)),
+			18: ((15, 16, 17, 18), (16, 17, 18, 19), (17, 18, 19, 20), (18, 25, 32, 39), (6, 12, 18, 24), (12, 18, 24, 30), (18, 24, 30, 36), (2, 10, 18, 26), (10, 18, 26, 34)),
+			19: ((16, 17, 18, 19), (17, 18, 19, 20), (19, 26, 33, 40), (13, 19, 25, 31), (19, 25, 31, 37), (3, 11, 19, 27)),
+			20: ((17, 18, 19, 20), (20, 27, 34, 41), (20, 26, 32, 38)),
+
+			21: ((21, 22, 23, 24), (3, 9, 15, 21)),
+			22: ((21, 22, 23, 24), (22, 23, 24, 25), (4, 10, 16, 22), (10, 16, 22, 28), (14, 22, 30, 38)),
+			23: ((21, 22, 23, 24), (22, 23, 24, 25), (23, 24, 25, 26), (5, 11, 17, 23), (11, 17, 23, 29), (17, 23, 29, 35), (7, 15, 23, 31), (15, 23, 31, 39)),
+			24: ((21, 22, 23, 24), (22, 23, 24, 25), (23, 24, 25, 26), (24, 25, 26, 27), (6, 12, 18, 24), (12, 18, 24, 30), (18, 24, 30, 36), (0, 8, 16, 24), (8, 16, 24, 32), (16, 24, 32, 40)),
+			25: ((22, 23, 24, 25), (23, 24, 25, 26), (24, 25, 26, 27), (13, 19, 25, 31), (19, 25, 31, 37), (1, 9, 17, 25), (9, 17, 25, 33), (17, 25, 33, 41)),
+			26: ((23, 24, 25, 26), (24, 25, 26, 27), (20, 26, 32, 38), (2, 10, 18, 26), (10, 18, 26, 34)),
+			27: ((24, 25, 26, 27), (3, 11, 19, 27)),
+
+			28: ((28, 29, 30, 31), (10, 16, 22, 28)),
+			29: ((28, 29, 30, 31), (29, 30, 31, 32), (11, 17, 23, 29), (17, 23, 29, 35)),
+			30: ((28, 29, 30, 31), (29, 30, 31, 32), (30, 31, 32, 33), (12, 18, 24, 30), (18, 24, 30, 36), (14, 22, 30, 38)),
+			31: ((28, 29, 30, 31), (29, 30, 31, 32), (30, 31, 32, 33), (31, 32, 33, 34), (13, 19, 25, 31), (19, 25, 31, 37), (7, 15, 23, 31), (15, 23, 31, 39)),
+			32: ((29, 30, 31, 32), (30, 31, 32, 33), (31, 32, 33, 34), (20, 26, 32, 38), (8, 16, 24, 32), (16, 24, 32, 40)),
+			33: ((30, 31, 32, 33), (31, 32, 33, 34), ( 9, 17, 25, 33), (17, 25, 33, 41)),
+			34: ((31, 32, 33, 34), (10, 18, 26, 34)),
+
+			35: ((35, 36, 37, 38), (17, 23, 29, 35)),
+			36: ((35, 36, 37, 38), (36, 37, 38, 39), (18, 24, 30, 36)),
+			37: ((35, 36, 37, 38), (36, 37, 38, 39), (37, 38, 39, 40), (19, 25, 31, 37)),
+			38: ((35, 36, 37, 38), (36, 37, 38, 39), (37, 38, 39, 40), (38, 39, 40, 41), (20, 26, 32, 38), (14, 22, 30, 38)),
+			39: ((36, 37, 38, 39), (37, 38, 39, 40), (38, 39, 40, 41), (15, 23, 31, 39)),
+			40: ((37, 38, 39, 40), (38, 39, 40, 41), (16, 24, 32, 40)),
+			41: ((38, 39, 40, 41), (17, 25, 33, 41))
+		}
+	
 	def printBoard(self):
-		pBoard = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+		pBoard = [' '] * 42
 		for i in range(0, 42):
 			if self.board[i] == 0:              # D-Val
 				pBoard[i] = ' '
@@ -18,7 +69,7 @@ class C4Board:
 			else:
 				sys.exit("Illegal number encountered on board. Exiting...")
 		print("\n+---+---+---+---+---+---+---+")
-		print("| 0 | 1 | 2 | 3 | 4 | 5 | 6 |")
+		print("| 1 | 2 | 3 | 4 | 5 | 6 | 7 |")
 		print("+---+---+---+---+---+---+---+")
 		for i in range(42):
 			if i in(6, 13, 20, 27, 34, 41):
@@ -31,10 +82,8 @@ class C4Board:
 		print("+---+---+---+---+---+---+---+")
 
 	def resetBoard(self	):
-		self.board = array('i', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-		self.wState = array('i', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+		self.board = array('i', [0] * 42)
 		self.count = 0
-	
 
 	def makeMove(self, playerNum, position):
 		if position < 0 or position > 6:
@@ -42,175 +91,50 @@ class C4Board:
 		
 		if self.board[position + 35] == 0:
 			self.board[position + 35] = playerNum
-			self.count += 1
-			return True
-
-		if self.board[position + 28] == 0:
+			self.lastPlayedPosition = position + 35
+		elif self.board[position + 28] == 0:
 			self.board[position + 28] = playerNum
-			self.count += 1
-			return True
-
-		if self.board[position + 21] == 0:
+			self.lastPlayedPosition = position + 28
+		elif self.board[position + 21] == 0:
 			self.board[position + 21] = playerNum
-			self.count += 1
-			return True
-		
-		if self.board[position + 14] == 0:
+			self.lastPlayedPosition = position + 21
+		elif self.board[position + 14] == 0:
 			self.board[position + 14] = playerNum
-			self.count += 1
-			return True
-
-		if self.board[position + 7] == 0:
+			self.lastPlayedPosition = position + 14
+		elif self.board[position + 7] == 0:
 			self.board[position + 7] = playerNum
-			self.count += 1
-			return True
-
-		if self.board[position] == 0:
+			self.lastPlayedPosition = position + 7
+		elif self.board[position] == 0:
 			self.board[position] = playerNum
-			self.count += 1
-			return True
-
+			self.lastPlayedPosition = position
 		else:
 			return False
+		
+		self.count += 1
+		return True
 
 	def checkWin(self):
-		# Vertical
-		# for i in range(14):
-		# 	self.wState[] = (self.board[i] + self.board[i+7] + self.board[i+14] + self.board[i+21])
-		self.wState[0] = (self.board[0] + self.board[0+7] + self.board[0+14] + self.board[0+21])
-		self.wState[1] = (self.board[1] + self.board[1+7] + self.board[1+14] + self.board[1+21])
-		self.wState[2] = (self.board[2] + self.board[2+7] + self.board[2+14] + self.board[2+21])
-		self.wState[3] = (self.board[3] + self.board[3+7] + self.board[3+14] + self.board[3+21])
-		self.wState[4] = (self.board[4] + self.board[4+7] + self.board[4+14] + self.board[4+21])
-		self.wState[5] = (self.board[5] + self.board[5+7] + self.board[5+14] + self.board[5+21])
-		self.wState[6] = (self.board[6] + self.board[6+7] + self.board[6+14] + self.board[6+21])
-		self.wState[7] = (self.board[7] + self.board[7+7] + self.board[7+14] + self.board[7+21])
-		self.wState[8] = (self.board[8] + self.board[8+7] + self.board[8+14] + self.board[8+21])
-		self.wState[9] = (self.board[9] + self.board[9+7] + self.board[9+14] + self.board[9+21])
-		self.wState[10] = (self.board[10] + self.board[10+7] + self.board[10+14] + self.board[10+21])
-		self.wState[11] = (self.board[11] + self.board[11+7] + self.board[11+14] + self.board[11+21])
-		self.wState[12] = (self.board[12] + self.board[12+7] + self.board[12+14] + self.board[12+21])
-		self.wState[13] = (self.board[13] + self.board[13+7] + self.board[13+14] + self.board[13+21])
+		checkTuples = self.winCheckDict[self.lastPlayedPosition]
+		for checkTuple in checkTuples:
+			if self.board[checkTuple[0]] == self.board[checkTuple[1]] == self.board[checkTuple[2]] == self.board[checkTuple[3]] != 0:
+				return 1 if self.board[self.lastPlayedPosition] == 3 else 2
 		
-		self.wState[14] = (self.board[14] + self.board[14+7] + self.board[14+14] + self.board[14+21])
-		self.wState[15] = (self.board[15] + self.board[15+7] + self.board[15+14] + self.board[15+21])
-		self.wState[16] = (self.board[16] + self.board[16+7] + self.board[16+14] + self.board[16+21])
-		self.wState[17] = (self.board[17] + self.board[17+7] + self.board[17+14] + self.board[17+21])
-		self.wState[18] = (self.board[18] + self.board[18+7] + self.board[18+14] + self.board[18+21])
-		self.wState[19] = (self.board[19] + self.board[19+7] + self.board[19+14] + self.board[19+21])
-		self.wState[20] = (self.board[20] + self.board[20+7] + self.board[20+14] + self.board[20+21])
-
-		# Horizontal
-		# for i in range(4):
-		# 	self.wState[] = (self.board[i] + self.board[i+1] + self.board[i+2] + self.board[i+3])
-		self.wState[21] = (self.board[0] + self.board[0+1] + self.board[0+2] + self.board[0+3])
-		self.wState[22] = (self.board[1] + self.board[1+1] + self.board[1+2] + self.board[1+3])
-		self.wState[23] = (self.board[2] + self.board[2+1] + self.board[2+2] + self.board[2+3])
-		self.wState[24] = (self.board[3] + self.board[3+1] + self.board[3+2] + self.board[3+3])
-
-		# for i in range(7, 11):
-		# 	self.wState[] = (self.board[i] + self.board[i+1] + self.board[i+2] + self.board[i+3])
-		self.wState[25] = (self.board[7] + self.board[7+1] + self.board[7+2] + self.board[7+3])
-		self.wState[26] = (self.board[8] + self.board[8+1] + self.board[8+2] + self.board[8+3])
-		self.wState[27] = (self.board[9] + self.board[9+1] + self.board[9+2] + self.board[9+3])
-		self.wState[28] = (self.board[10] + self.board[10+1] + self.board[10+2] + self.board[10+3])
-
-
-		# for i in range(14, 18):
-		# 	self.wState[] = (self.board[i] + self.board[i+1] + self.board[i+2] + self.board[i+3])
-		self.wState[29] = (self.board[14] + self.board[14+1] + self.board[14+2] + self.board[14+3])
-		self.wState[30] = (self.board[15] + self.board[15+1] + self.board[15+2] + self.board[15+3])
-		self.wState[31] = (self.board[16] + self.board[16+1] + self.board[16+2] + self.board[16+3])
-		self.wState[32] = (self.board[17] + self.board[17+1] + self.board[17+2] + self.board[17+3])
-
-		# for i in range(21, 25):
-		# 	self.wState[] = (self.board[i] + self.board[i+1] + self.board[i+2] + self.board[i+3])
-		self.wState[33] = (self.board[21] + self.board[21+1] + self.board[21+2] + self.board[21+3])
-		self.wState[34] = (self.board[22] + self.board[22+1] + self.board[22+2] + self.board[22+3])
-		self.wState[35] = (self.board[23] + self.board[23+1] + self.board[23+2] + self.board[23+3])
-		self.wState[36] = (self.board[24] + self.board[24+1] + self.board[24+2] + self.board[24+3])
-
-		# for i in range(28, 32):
-		# 	self.wState[] = (self.board[i] + self.board[i+1] + self.board[i+2] + self.board[i+3])
-		self.wState[37] = (self.board[28] + self.board[28+1] + self.board[28+2] + self.board[28+3])
-		self.wState[38] = (self.board[29] + self.board[29+1] + self.board[29+2] + self.board[29+3])
-		self.wState[39] = (self.board[30] + self.board[30+1] + self.board[30+2] + self.board[30+3])
-		self.wState[40] = (self.board[31] + self.board[31+1] + self.board[31+2] + self.board[31+3])
-
-		self.wState[41] = (self.board[35] + self.board[35+1] + self.board[35+2] + self.board[35+3])
-		self.wState[42] = (self.board[36] + self.board[36+1] + self.board[36+2] + self.board[36+3])
-		self.wState[43] = (self.board[37] + self.board[37+1] + self.board[37+2] + self.board[37+3])
-		self.wState[44] = (self.board[38] + self.board[38+1] + self.board[38+2] + self.board[38+3])
-
-		# # Positive diagonal
-		# for i in range(4):
-		# 	self.wState[] = (self.board[i] + self.board[i+8] + self.board[i+16] + self.board[i+24])
-		self.wState[45] = (self.board[0] + self.board[0+8] + self.board[0+16] + self.board[0+24])
-		self.wState[46] = (self.board[1] + self.board[1+8] + self.board[1+16] + self.board[1+24])
-		self.wState[47] = (self.board[2] + self.board[2+8] + self.board[2+16] + self.board[2+24])
-		self.wState[48] = (self.board[3] + self.board[3+8] + self.board[3+16] + self.board[3+24])
-
-		# for i in range(7, 11):
-		# 	self.wState[] = (self.board[i] + self.board[i+8] + self.board[i+16] + self.board[i+24])
-		self.wState[49] = (self.board[7] + self.board[7+8] + self.board[7+16] + self.board[7+24])
-		self.wState[50] = (self.board[8] + self.board[8+8] + self.board[8+16] + self.board[8+24])
-		self.wState[51] = (self.board[9] + self.board[9+8] + self.board[9+16] + self.board[9+24])
-		self.wState[52] = (self.board[10] + self.board[10+8] + self.board[10+16] + self.board[10+24])
-
-		self.wState[53] = (self.board[14] + self.board[14+8] + self.board[14+16] + self.board[14+24])
-		self.wState[54] = (self.board[15] + self.board[15+8] + self.board[15+16] + self.board[15+24])
-		self.wState[55] = (self.board[16] + self.board[16+8] + self.board[16+16] + self.board[16+24])
-		self.wState[56] = (self.board[17] + self.board[17+8] + self.board[17+16] + self.board[17+24])
-
-		# # Negative diagonal
-		# for i in range(6, 2, -1):
-		# 	self.wState[] = (self.board[i] + self.board[i+6] + self.board[i+12] + self.board[i+18])
-		self.wState[57] = (self.board[6] + self.board[6+6] + self.board[6+12] + self.board[6+18])
-		self.wState[58] = (self.board[5] + self.board[5+6] + self.board[5+12] + self.board[5+18])
-		self.wState[59] = (self.board[4] + self.board[4+6] + self.board[4+12] + self.board[4+18])
-		self.wState[60] = (self.board[3] + self.board[3+6] + self.board[3+12] + self.board[3+18])
-
-		# for i in range(13, 9, -1):
-		# 	self.wState[] = (self.board[i] + self.board[i+6] + self.board[i+12] + self.board[i+18])
-		self.wState[61] = (self.board[13] + self.board[13+6] + self.board[13+12] + self.board[13+18])
-		self.wState[62] = (self.board[12] + self.board[12+6] + self.board[12+12] + self.board[12+18])
-		self.wState[63] = (self.board[11] + self.board[11+6] + self.board[11+12] + self.board[11+18])
-		self.wState[64] = (self.board[10] + self.board[10+6] + self.board[10+12] + self.board[10+18])
-
-		self.wState[65] = (self.board[20] + self.board[20+6] + self.board[20+12] + self.board[20+18])
-		self.wState[66] = (self.board[19] + self.board[19+6] + self.board[19+12] + self.board[19+18])
-		self.wState[67] = (self.board[18] + self.board[18+6] + self.board[18+12] + self.board[18+18])
-		self.wState[68] = (self.board[17] + self.board[17+6] + self.board[17+12] + self.board[17+18])
-
-		for i in range(len(self.wState)):
-			if self.wState[i] == 12:             # D-Val
-				return (1, i)                   # D-Val
-			if self.wState[i] == -8:            # D-Val
-				return (2, i)                   # D-Val
 		if self.count == 41:
-			return (0, None)
-		return (-1, None)
-
-	def getwStateSum(self):
-		wStateSum = 0
-		for i in self.wState:
-			wStateSum += i
-		return wStateSum
+			return 0
+		return -1
 
 	def printInfo(self):
 		print("\nGAME[0]: Connect-4\n")
 		print("INFO[0]: The positions on the board are controlled via the column numbers, i.e.\n")
 		print("+---+---+---+---+---+---+---+")
-		print("| 0 | 1 | 2 | 3 | 4 | 5 | 6 |")
+		print("| 1 | 2 | 3 | 4 | 5 | 6 | 7 |")
 		print("+---+---+---+---+---+---+---+")
 		for i in range(42):
 			if i in(6, 13, 20, 27, 34, 41):
-				print("   |")
+				print(f"   |")
 			elif i in (0, 7, 14, 21, 28, 35):
-				print("|    ", end="")
+				print(f"|    ", end="")
 			else:
-				print("    ", end="")
-		
+				print(f"    ", end="")
 		print("+---+---+---+---+---+---+---+")
 		print("INFO[1]: Player X goes first\n")
-

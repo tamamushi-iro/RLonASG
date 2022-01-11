@@ -18,20 +18,20 @@ if __name__=="__main__":
 
 	while b.count < 35:
 		if b.count > 7:
-			status, wSindex = b.checkWin()
+			status = b.checkWin()
 			if status == 0:
 				print("Game Draw!\n")
 				break
 			elif status == 1:
-				print(f"Player X Wins! (wState[{wSindex}]: {b.wState[wSindex]})\n")
+				print(f"Player X Wins!\n")
 				break
 			elif status == 2:
-				print(f"Player O Wins! (wState[{wSindex}]: {b.wState[wSindex]})\n")
+				print(f"Player O Wins!\n")
 				break
 		cPChar = next(playerCharToggler)
 		cPNum = next(playerNumToggler)
 		print(f"\nPlayer {cPChar}: ", end='', flush=True)
-		while not b.makeMove(cPNum, int(input())):
+		while not b.makeMove(cPNum, int(input()) - 1):
 			print("Already Occuipied or Invalid Position", end='')
 			print(f"\nPlayer {cPChar}: ", end='', flush=True)
 		

@@ -20,23 +20,24 @@ def main(noOfGames):
 	oWins, oWinsPrev, oWinsPlot = 0, 0, []
 	draws, drawsPrev, drawsPlot = 0, 0, []
 	gameNoPlot = []
+	dataStep = noOfGames / 100 if noOfGames > 100 else noOfGames / 10
 
 	for i in range(noOfGames):
 		emptyPositions = [0, 1, 2, 3, 4, 5, 6]
 		# print(f"Game No.: {i + 1}")
 		while b.count < 42:
 			if b.count > 7:
-				status, wSindex = b.checkWin()
+				status = b.checkWin()
 				if status == 0:
-					# print(f"Game Draw! {b.getwStateSum()}\n")
+					# print(f"Game Draw!\n")
 					draws += 1
 					break
 				elif status == 1:
-					# print(f"Player X Wins! (wState[{wSindex}]: {b.wState[wSindex]}) {b.getwStateSum()}\n")
+					# print(f"Player X Wins!\n")
 					xWins += 1
 					break
 				elif status == 2:
-					# print(f"Player O Wins! (wState[{wSindex}]: {b.wState[wSindex]}) {b.getwStateSum()}\n")
+					# print(f"Player O Wins!\n")
 					oWins += 1
 					break
 
@@ -48,18 +49,18 @@ def main(noOfGames):
 
 			# b.printBoard()
 			# print("")
-		if (i + 1) % 1000 == 0:
+		if (i + 1) % dataStep == 0:
 			print(f"Game No.: {i + 1}")
 			gameNoPlot.append(i + 1)
-			xWinsPlot.append((xWins - xWinsPrev) / 1000)
-			oWinsPlot.append((oWins - oWinsPrev) / 1000)
-			drawsPlot.append((draws - drawsPrev) / 1000)
+			xWinsPlot.append((xWins - xWinsPrev) / dataStep)
+			oWinsPlot.append((oWins - oWinsPrev) / dataStep)
+			drawsPlot.append((draws - drawsPrev) / dataStep)
 			xWinsPrev = xWins
 			oWinsPrev = oWins
 			drawsPrev = draws
 		b.resetBoard()
 
-	print(f"Time taken: {time() - startTime}s\n")
+	print(f"\nTime taken: {time() - startTime}s")
 	print(f"\nX-Win Probability: {xWins/noOfGames}")
 	print(f"O-Win Probatility: {oWins/noOfGames}")
 	print(f"Draws Probability: {draws/noOfGames}\n")
