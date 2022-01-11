@@ -1,32 +1,29 @@
 from itertools import cycle
-
 from time import time
-import random
 from C4Board import C4Board 
-
 
 if __name__=="__main__":
 	
 	startTime = time()
 
+	playerNumToggler = cycle([1, -1])					# D-Val
 	playerCharToggler = cycle(['X', 'O'])               # D-Char
-	playerNumToggler = cycle([3, -2])                   # D-Val
 	b = C4Board()
 	b.printInfo()
 	
 	emptyPositions = [0, 1, 2, 3, 4, 5, 6]
 
-	while b.count < 35:
+	while b.count < 42:
 		if b.count > 7:
 			status = b.checkWin()
 			if status == 0:
 				print("Game Draw!\n")
 				break
+			elif status == -1:
+				print(f"Player O Wins!\n")
+				break
 			elif status == 1:
 				print(f"Player X Wins!\n")
-				break
-			elif status == 2:
-				print(f"Player O Wins!\n")
 				break
 		cPChar = next(playerCharToggler)
 		cPNum = next(playerNumToggler)

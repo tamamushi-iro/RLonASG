@@ -5,7 +5,7 @@ class C4Board:
 	def __init__(self) -> None:
 		self.board = array('i', [0] * 42)
 		self.count = 0
-		self.lastPlayedPosition = -1
+		self.lastPlayedPosition = -99
 		# Horizontal, Vertical, Left Diag (/), Right Diag (\)
 		self.winCheckDict = {
 			0: ((0, 1, 2, 3), (0, 7, 14, 21), (0, 8, 16, 24)),
@@ -62,9 +62,9 @@ class C4Board:
 		for i in range(0, 42):
 			if self.board[i] == 0:              # D-Val
 				pBoard[i] = ' '
-			elif self.board[i] == -2:           # D-Val
+			elif self.board[i] == -1:           # D-Val
 				pBoard[i] = 'O'                 # D-Char
-			elif self.board[i] == 3:            # D-Val
+			elif self.board[i] == 1:            # D-Val
 				pBoard[i] = 'X'                 # D-Char
 			else:
 				sys.exit("Illegal number encountered on board. Exiting...")
@@ -117,11 +117,11 @@ class C4Board:
 		checkTuples = self.winCheckDict[self.lastPlayedPosition]
 		for checkTuple in checkTuples:
 			if self.board[checkTuple[0]] == self.board[checkTuple[1]] == self.board[checkTuple[2]] == self.board[checkTuple[3]] != 0:
-				return 1 if self.board[self.lastPlayedPosition] == 3 else 2
+				return self.board[self.lastPlayedPosition]
 		
 		if self.count == 41:
 			return 0
-		return -1
+		return -99
 
 	def printInfo(self):
 		print("\nGAME[0]: Connect-4\n")

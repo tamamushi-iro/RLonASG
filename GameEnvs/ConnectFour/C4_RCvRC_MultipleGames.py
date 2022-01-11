@@ -11,7 +11,7 @@ def main(noOfGames):
 	startTime = time()
 	
 	b = C4Board()
-	playerNumToggler = cycle([3, -2])				# D-Val
+	playerNumToggler = cycle([1, -1])				# D-Val
 	playerCharToggler = cycle(['X', 'O'])		  	# D-Char
 
 	# b.printInfo()
@@ -32,13 +32,13 @@ def main(noOfGames):
 					# print(f"Game Draw!\n")
 					draws += 1
 					break
+				elif status == -1:
+					# print(f"Player O Wins!\n")
+					oWins += 1
+					break
 				elif status == 1:
 					# print(f"Player X Wins!\n")
 					xWins += 1
-					break
-				elif status == 2:
-					# print(f"Player O Wins!\n")
-					oWins += 1
 					break
 
 			cPChar = next(playerCharToggler)
