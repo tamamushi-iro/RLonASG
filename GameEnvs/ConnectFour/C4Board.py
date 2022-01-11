@@ -199,14 +199,18 @@ class C4Board:
 
 	def printInfo(self):
 		print("\nGAME[0]: Connect-4\n")
-		print("INFO[0]: The positions on the board are controlled via the column numbers, i.e. \n0   1    2    3    4    5    6:")
-		print("---+---+---+---+---+---+---+")
-		for i in range(35):
-			if i in(6, 13, 20, 27):
-				print(" | ")
+		print("INFO[0]: The positions on the board are controlled via the column numbers, i.e.\n")
+		print("+---+---+---+---+---+---+---+")
+		print("| 0 | 1 | 2 | 3 | 4 | 5 | 6 |")
+		print("+---+---+---+---+---+---+---+")
+		for i in range(42):
+			if i in(6, 13, 20, 27, 34, 41):
+				print("   |")
+			elif i in (0, 7, 14, 21, 28, 35):
+				print("|    ", end="")
 			else:
-				print(" | ", end="")
+				print("    ", end="")
 		
-		print("\n---+---+---+---+---+---+---+")
+		print("+---+---+---+---+---+---+---+")
 		print("INFO[1]: Player X goes first\n")
 
