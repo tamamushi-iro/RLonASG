@@ -3,6 +3,7 @@ import C4Board
 from itertools import cycle
 
 top = tkinter.Tk()
+top.title("Connect4 - Human vs Human")
 c4=C4Board.C4Board()
 playerCharToggler = cycle(['X', 'O'])
 playerNumToggler = cycle([1, -1])

@@ -1,8 +1,9 @@
 from itertools import cycle
 from time import time
-from C4Board import C4Board 
+from sys import argv
+from C4Board import C4Board
 
-if __name__=="__main__":
+def main(noOfGames):
 	
 	startTime = time()
 
@@ -10,29 +11,36 @@ if __name__=="__main__":
 	playerCharToggler = cycle(['X', 'O'])               # D-Char
 	b = C4Board()
 	b.printInfo()
-	
-	emptyPositions = [0, 1, 2, 3, 4, 5, 6]
 
-	while b.count < 42:
-		if b.count > 7:
-			status = b.checkWin()
-			if status == 0:
-				print("Game Draw!\n")
-				break
-			elif status == -1:
-				print(f"Player O Wins!\n")
-				break
-			elif status == 1:
-				print(f"Player X Wins!\n")
-				break
-		cPChar = next(playerCharToggler)
-		cPNum = next(playerNumToggler)
-		print(f"\nPlayer {cPChar}: ", end='', flush=True)
-		while not b.makeMove(cPNum, int(input()) - 1):
-			print("Already Occuipied or Invalid Position", end='')
-			print(f"\nPlayer {cPChar}: ", end='', flush=True)
+	for i in range(noOfGames):
+		while b.moveCount < 43:
+			if b.moveCount > 7:
+				status = b.checkWin()
+				if status == 0:
+					print("Game Draw!\n")
+					break
+				elif status == -1:
+					print(f"Player O Wins!\n")
+					break
+				elif status == 1:
+					print(f"Player X Wins!\n")
+					break
+			cPChar = next(playerCharToggler)
+			cPNum = next(playerNumToggler)
+			print(f"\n{b.moveCount + 1}: Player {cPChar}: ", end='', flush=True)
+			while not b.makeMove(cPNum, int(input()) - 1):
+				print("Already Occuipied or Invalid Position", end='')
+				print(f"\nPlayer {cPChar}: ", end='', flush=True)
+			
+			b.printBoard()
+			print("")
 		
-		b.printBoard()
-		print("")
+		print(f"Time taken: {time() - startTime}s\n")
+		b.resetBoard()
 
-	print(f"Time taken: {time() - startTime}s\n")
+if __name__ == "__main__":
+	if len(argv) != 2:
+		noOfGames = 1
+	else:
+		noOfGames = int(argv[1])
+	main(noOfGames)

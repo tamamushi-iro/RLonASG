@@ -51,7 +51,7 @@ def predictNextMove(model, board, emptyPositions):
     position = outputList.index(max(outputList)) + 1
     while(position not in emptyPositions):
         print(position)
-        # print(outputList.pop(position - 1))               # YOU F'IN IDIOT TAKING INDEXES FROM A POPPING LIST
+        # print(outputList.pop(position - 1))               # YOU'RE TAKING INDEXES FROM A POPPING LIST
         print(outputList[position - 1])
         outputList[position - 1] = 0
         print(outputList)

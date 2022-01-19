@@ -61,7 +61,7 @@ if __name__ == "__main__":
 			cPChar = next(playerCharToggler)
 			cPNum = next(playerNumToggler)
 			
-			# If Player O's turn, Random.
+			# If Player O's turn, Human.
 			if cPNum == 1:
 				print(f"Player {cPChar}: ", end='', flush=True)
 				prevState = tuple(b.board[1:])
