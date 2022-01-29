@@ -1,3 +1,4 @@
+from typing_extensions import Self
 import numpy as np
 
 class C4_MCTSAgent:
@@ -7,26 +8,44 @@ class C4_MCTSAgent:
 		self.pNum = pNum
 		self.maxGames = maxGames
 		self.verbose = verbose
-		self.rootNode = Node(self.board.board, self.board.possibleMoves(),parent=None, childNodes=[])
+		self.currentNode = None
 	
-	def getMove(self, board):
+	def getMove(self, state):
+		if self.currentNode is None:
+			self.currentNode = Node(self.board.board, self.board.possibleMoves())
+		
+		if 
+
+	def mcts(self):
+		# Select / Tree Policy
+		node = self.rootNode.select()
+		print(node)
+		# Expand
+		node.expand(self.board.possibleMoves())
+		print(node)
+		# Roll-out / Simulate / Default Policy
+		# Backpropagate / Backup
 		pass
 
 class Node:
 	def __init__(self, state, possibleMoves, parent=None, childNodes=[]) -> None:
-		self.state = state
+		# self.state = state
 		self.parent = parent
 		self.childNodes = childNodes
 		self.wins = 0						# t totalValue? scores? win/games ratio?
 		self.visits = 0						# n
 		self.availableMoves = possibleMoves
 
-	def select(self):
+	def __str__(self) -> str:
+		return f"Parent: {self.parent} | Childs: {self.childNodes}\nState: {None}\nWins\\Visits: {self.wins}\\{self.visits}\nAvailable Moves: {self.availableMoves}"
+
+	def select(self) -> Self:
+		if self.childNodes == []: return self
 		uctValue = lambda x: x.wins/x.visits + np.sqrt(2*np.log(self.visits)/x.visits)
 		return sorted(self.childNodes, key=uctValue)[-1]
 
-	def expand(self, move, state):
-		pass
+	def expand(self, possibleMoves):
+		self.childNodes.append(Node('state:PlaceHolder', possibleMoves, parent=self, childNodes=[]))
 
 
 # class Node:

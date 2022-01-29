@@ -41,7 +41,7 @@ class C4Board:
 		30: ((28, 29, 30, 31), (29, 30, 31, 32), (30, 31, 32, 33), (12, 18, 24, 30), (18, 24, 30, 36), (14, 22, 30, 38)),
 		31: ((28, 29, 30, 31), (29, 30, 31, 32), (30, 31, 32, 33), (31, 32, 33, 34), (13, 19, 25, 31), (19, 25, 31, 37), (7, 15, 23, 31), (15, 23, 31, 39)),
 		32: ((29, 30, 31, 32), (30, 31, 32, 33), (31, 32, 33, 34), (20, 26, 32, 38), (8, 16, 24, 32), (16, 24, 32, 40)),
-		33: ((30, 31, 32, 33), (31, 32, 33, 34), ( 9, 17, 25, 33), (17, 25, 33, 41)),
+		33: ((30, 31, 32, 33), (31, 32, 33, 34), (9, 17, 25, 33), (17, 25, 33, 41)),
 		34: ((31, 32, 33, 34), (10, 18, 26, 34)),
 
 		35: ((35, 36, 37, 38), (17, 23, 29, 35)),
@@ -79,7 +79,6 @@ class C4Board:
 				print("| " + pBoard[i] + "  ", end="")
 			else:
 				print(" " + pBoard[i] + "  ", end="")
-		
 		print("+---+---+---+---+---+---+---+")
 
 	def resetBoard(self):
@@ -123,10 +122,11 @@ class C4Board:
 		
 		if self.moveCount > 41:
 			return 0
-		return -99
+		return None
 	
 	def possibleMoves(self):
-		return [i for i in range(7) if self.board[i] == 0]
+		possibleMoves = [i for i in range(7) if self.board[i] == 0]
+		return possibleMoves if possibleMoves != [] else False
 
 	def printInfo(self):
 		print("\nGAME[0]: Connect-4\n")
