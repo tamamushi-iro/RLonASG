@@ -26,7 +26,7 @@ def main(noOfGames, verbose=False):
 		emptyPositions = [0, 1, 2, 3, 4, 5, 6]
 		if verbose: print(f"Game No.: {i + 1}")
 		while b.moveCount < 43:
-			if b.moveCount > 7:
+			if b.moveCount > 6:
 				status = b.checkWin()
 				if status == 0:
 					if verbose: print(f"Game Draw!\n")

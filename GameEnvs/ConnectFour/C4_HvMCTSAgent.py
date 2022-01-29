@@ -17,29 +17,31 @@ def main(noOfGames):
 
 	for i in range(noOfGames):
 		while b.moveCount < 43:
-			if b.moveCount > 7:
+			if b.moveCount > 6:
 				status = b.checkWin()
 				if status == 0:
-					print("Game Draw!\n")
+					print(f"Game Draw! at move: {b.moveCount}\n")
 					break
 				elif status == -1:
-					print(f"Player O Wins!\n")
+					print(f"Player O Wins! at move: {b.moveCount}\n")
 					break
 				elif status == 1:
-					print(f"Player X Wins!\n")
+					print(f"Player X Wins! at move: {b.moveCount}\n")
 					break
 			cPChar = next(playerCharToggler)
 			cPNum = next(playerNumToggler)
 			# Player X's turn, Agent
 			if cPNum == 1:
 				position = agent.getMove(b)
-				b.makeMove(position)
-				print(f"\n{b.moveCount + 1}: Player {cPChar}: {position}", end='', flush=True)
+				position = 0
+				print(f"\n{b.moveCount + 1}: Player {cPChar}: {position + 1}", end='', flush=True)
+				b.makeMove(cPNum, position)
+			# Player O's turn, Human
 			elif cPNum == -1:
-				print(f"\nPlayer {cPChar}: ", end='', flush=True)
+				print(f"\n{b.moveCount + 1}: Player {cPChar}: ", end='', flush=True)
 				while not b.makeMove(cPNum, int(input()) - 1):
 					print("Already Occuipied or Invalid Position", end='')
-					print(f"\nPlayer {cPChar}: ", end='', flush=True)
+					print(f"\n{b.moveCount + 1}: Player {cPChar}: ", end='', flush=True)
 			b.printBoard()
 			print("")
 		

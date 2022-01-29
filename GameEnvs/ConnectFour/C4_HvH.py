@@ -14,7 +14,7 @@ def main(noOfGames):
 
 	for i in range(noOfGames):
 		while b.moveCount < 43:
-			if b.moveCount > 7:
+			if b.moveCount > 6:
 				status = b.checkWin()
 				if status == 0:
 					print("Game Draw!\n")
@@ -30,7 +30,7 @@ def main(noOfGames):
 			print(f"\n{b.moveCount + 1}: Player {cPChar}: ", end='', flush=True)
 			while not b.makeMove(cPNum, int(input()) - 1):
 				print("Already Occuipied or Invalid Position", end='')
-				print(f"\nPlayer {cPChar}: ", end='', flush=True)
+				print(f"\n{b.moveCount + 1}: Player {cPChar}: ", end='', flush=True)
 			
 			b.printBoard()
 			print("")
