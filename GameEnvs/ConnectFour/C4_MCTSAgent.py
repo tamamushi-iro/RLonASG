@@ -1,4 +1,3 @@
-from typing_extensions import Self
 import numpy as np
 
 class C4_MCTSAgent:
@@ -8,21 +7,17 @@ class C4_MCTSAgent:
 		self.pNum = pNum
 		self.maxGames = maxGames
 		self.verbose = verbose
-		self.currentNode = None
-	
-	def getMove(self, state):
-		if self.currentNode is None:
-			self.currentNode = Node(self.board.board, self.board.possibleMoves())
-		
-		if 
+		self.rootNode = None
 
-	def mcts(self):
+	def getMove(self, state):
 		# Select / Tree Policy
-		node = self.rootNode.select()
+		node = self.rootNode
+		while node is not None:
+			node.select()
 		print(node)
 		# Expand
-		node.expand(self.board.possibleMoves())
-		print(node)
+		# node.expand(self.board.possibleMoves())
+		# print(node)
 		# Roll-out / Simulate / Default Policy
 		# Backpropagate / Backup
 		pass
@@ -39,7 +34,7 @@ class Node:
 	def __str__(self) -> str:
 		return f"Parent: {self.parent} | Childs: {self.childNodes}\nState: {None}\nWins\\Visits: {self.wins}\\{self.visits}\nAvailable Moves: {self.availableMoves}"
 
-	def select(self) -> Self:
+	def select(self):
 		if self.childNodes == []: return self
 		uctValue = lambda x: x.wins/x.visits + np.sqrt(2*np.log(self.visits)/x.visits)
 		return sorted(self.childNodes, key=uctValue)[-1]
