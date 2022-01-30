@@ -13,7 +13,7 @@ def main(noOfGames):
 	playerNumToggler = cycle([1, -1])					# D-Val
 	playerCharToggler = cycle(['X', 'O'])               # D-Char
 
-	agent = C4_MCTSAgent(b, 'X', 1, verbose=True)
+	agent = C4_MCTSAgent(b, 'X', 1, verbose=False)
 
 	for i in range(noOfGames):
 		while b.moveCount < 43:
@@ -32,8 +32,8 @@ def main(noOfGames):
 			cPNum = next(playerNumToggler)
 			# Player X's turn, Agent
 			if cPNum == 1:
-				position = agent.getMove(b)
-				position = 0
+				position = agent.getMove()
+				print(f"Chosen Position: {position}")
 				print(f"\n{b.moveCount + 1}: Player {cPChar}: {position + 1}", end='', flush=True)
 				b.makeMove(cPNum, position)
 			# Player O's turn, Human

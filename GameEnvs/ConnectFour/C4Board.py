@@ -57,6 +57,7 @@ class C4Board:
 		self.board = board
 		self.moveCount = 0
 		self.lastPlayedPosition = None
+		self.lastPlayerNum = -1
 	
 	def printBoard(self):
 		pBoard = [' '] * 42
@@ -111,10 +112,12 @@ class C4Board:
 			return False
 		
 		self.moveCount += 1
+		self.lastPlayerNum = playerNum
 		return True
 
 	def checkWin(self):
-		# Handle KeyError?
+		# Handle KeyError? I FORSAW THEREFORE I GOD.
+		if self.lastPlayedPosition is None: return None
 		checkTuples = self.winCheckDict[self.lastPlayedPosition]
 		for checkTuple in checkTuples:
 			if self.board[checkTuple[0]] == self.board[checkTuple[1]] == self.board[checkTuple[2]] == self.board[checkTuple[3]] != 0:

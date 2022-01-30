@@ -1,117 +1,101 @@
 import numpy as np
-
-class C4_MCTSAgent:
-	def __init__(self, board, pChar, pNum, maxGames=20000, verbose=False) -> None:
-		self.board = board
-		self.pChar = pChar
-		self.pNum = pNum
-		self.maxGames = maxGames
-		self.verbose = verbose
-		self.rootNode = None
-
-	def getMove(self, state):
-		# Select / Tree Policy
-		node = self.rootNode
-		while node is not None:
-			node.select()
-		print(node)
-		# Expand
-		# node.expand(self.board.possibleMoves())
-		# print(node)
-		# Roll-out / Simulate / Default Policy
-		# Backpropagate / Backup
-		pass
+from copy import deepcopy
+from random import choice
+from itertools import cycle
 
 class Node:
-	def __init__(self, state, possibleMoves, parent=None, childNodes=[]) -> None:
-		# self.state = state
+	def __init__(self, possibleMoves, playerNum, move=None, parent=None) -> None:
+		self.move = move
 		self.parent = parent
-		self.childNodes = childNodes
+		self.childNodes = []
 		self.wins = 0						# t totalValue? scores? win/games ratio?
 		self.visits = 0						# n
 		self.availableMoves = possibleMoves
+		self.playerNum = playerNum
 
 	def __str__(self) -> str:
-		return f"Parent: {self.parent} | Childs: {self.childNodes}\nState: {None}\nWins\\Visits: {self.wins}\\{self.visits}\nAvailable Moves: {self.availableMoves}"
+		return f"Has Parent: {None if self.parent is None else 'Yes'} | No. of Childs: {len(self.childNodes)}\nValue: {'inf' if self.visits == 0 else self.wins/self.visits}\nWins/Visits: {self.wins}/{self.visits}\nAvailable Moves: {self.availableMoves}\n"
 
 	def select(self):
-		if self.childNodes == []: return self
 		uctValue = lambda x: x.wins/x.visits + np.sqrt(2*np.log(self.visits)/x.visits)
 		return sorted(self.childNodes, key=uctValue)[-1]
 
-	def expand(self, possibleMoves):
-		self.childNodes.append(Node('state:PlaceHolder', possibleMoves, parent=self, childNodes=[]))
-
-
-# class Node:
-# 	def __init__(self, board, player, parent=None):
-# 		self.board = board.copy()
-# 		self.parent = parent
-# 		self.move = move
-# 		self.untriedMoves = state.getMoves()
-# 		self.childNodes = []
-# 		self.wins = 0
-# 		self.visits = 0
-# 		self.player = state.player
-		
-# 	def selection(self):
-# 		# return child with largest UCT value
-# 		foo = lambda x: x.wins/x.visits + np.sqrt(2*np.log(self.visits)/x.visits)
-# 		return sorted(self.childNodes, key=foo)[-1]
-		
-# 	def expand(self, move, state):
-# 		# return child when move is taken
-# 			# remove move from current node
-# 		child = Node(move=move, parent=self, state=state)
-# 		self.untriedMoves.remove(move)
-# 		self.childNodes.append(child)
-# 		return child
-
-# 	def update(self, result):
-# 		self.wins += result
-# 		self.visits += 1
-		
-# def MCTS(currentState, itermax, currentNode=None, timeout=100):
-# 	rootnode = Node(state=currentState)
-# 	if currentNode is not None: rootnode = currentNode
+	def expand(self, move, playerNum, possibleMoves):
+		child = Node(possibleMoves, playerNum, move=move, parent=self)
+		self.availableMoves.remove(move)
+		self.childNodes.append(child)
+		return child
 	
-# #    print(rootnode.wins, rootnode.visits)
-# #    for child in rootnode.childNodes:
-# #        print(child.move, child.wins, child.visits)
-	
-# 	start = time.clock()
-# 	for i in range(itermax):
-# 		node = rootnode
-# 		state = currentState.Clone()
-		
-# 		# selection
-# 			# keep going down the tree based on best UCT values until terminal or unexpanded node
-# 		while node.untriedMoves == [] and node.childNodes != []:
-# 			node = node.selection()
-# 			state.move(node.move)
+	def update(self, win):
+		# print(f"Win: {win}")
+		self.wins += win
+		self.visits += 1
 
-# 		# expand
-# 		if node.untriedMoves != []:
-# 			m = random.choice(node.untriedMoves)
-# 			state.move(m)            
-# 			node = node.expand(m, state)
+
+class C4_MCTSAgent:
+	def __init__(self, board, pChar, pNum, maxIter=50000, verbose=False) -> None:
+		self.board = board
+		self.pChar = pChar
+		self.pNum = pNum
+		self.maxIter = maxIter
+		self.verbose = verbose
+		# self.node = None
+
+	def getMove(self, currNode=None):
+		# Prepare Vars for mcts
+		# currBoardClone = deepcopy(self.board)
 		
-# 		# rollout
-# 		while state.getMoves():
-# 			state.move(random.choice(state.getMoves()))
+		# get move from mcts algo
+		bestMove = self.mcts()
+
+		# change board if nessesary
+
+		return bestMove
+		
+
+	def mcts(self):
+		rootNode = Node(possibleMoves=self.board.possibleMoves(), playerNum=self.board.lastPlayerNum)			# ?
+		print(f"rootNode: {rootNode}")
+		for i in range(self.maxIter):
+			if self.verbose: print(f"Iteration: {i + 1}")
+			node = rootNode
+			state = deepcopy(self.board)									# Resets state to current game state
+			if self.verbose: print(f"node: {node}")
 			
-# 		# backpropagate
-# 		while node is not None:
-# 			node.update(state.result(node.player))
-# 			node = node.parent
+			# Select / Tree Policy
+			while node.availableMoves == [] and node.childNodes != []:
+				node = node.select()
+				if state.checkWin() is None: state.makeMove(-1 * node.parent.playerNum, node.move)
+				if self.verbose: print(f"During Select: {state.lastPlayerNum}")
+				if self.verbose: state.printBoard()
+
+
+			# Expand - Done
+			if node.availableMoves:
+				randomMove = choice(node.availableMoves)
+				if state.checkWin() is None: state.makeMove(-1 * node.playerNum, randomMove)
+				if self.verbose: print(f"During Expand: {state.lastPlayerNum}")
+				if self.verbose: state.printBoard()
+				node = node.expand(randomMove, state.lastPlayerNum, state.possibleMoves())
+				if self.verbose: print(f"childNode: {node}")
+
+			# Roll-out / Simulate / Default Policy - Done?
+			while state.checkWin() is None:
+				if state.checkWin() is None: state.makeMove(-1 * state.lastPlayerNum, choice(state.possibleMoves()))
+				if self.verbose: state.printBoard()
+			status = state.checkWin()
+			if self.verbose: print(status)
+
+			# Backpropagate / Backup - Done?
+			while node is not None:
+				node.update(1 if status == self.pNum else 0)
+				node = node.parent
 		
-# 		duration = time.clock() - start
-# 		if duration > timeout: break
-		
-# 	foo = lambda x: x.wins/x.visits
-# 	sortedChildNodes = sorted(rootnode.childNodes, key=foo)[::-1]
-# 	print("AI\'s computed winning percentages")
-# 	for node in sortedChildNodes:
-# 		print('Move: %s    Win Rate: %.2f%%' % (node.move+1, 100*node.wins/node.visits))
-# 	print('Simulations performed: %s\n' % i)
-# 	return rootnode, sortedChildNodes[0].move
+		print(f"rootNode: {rootNode}")
+		valueFunc = lambda x: x.wins/x.visits
+		sortedChilds = sorted(rootNode.childNodes, key=valueFunc)[::-1]
+		# print(sortedChilds)
+		print(sortedChilds[0])
+		for node in sortedChilds:
+			print(f"Move: {node.move + 1}\tValue: {node.wins/node.visits}")
+		return sortedChilds[0].move
