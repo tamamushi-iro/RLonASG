@@ -13,9 +13,8 @@ def main(noOfGames):
 	playerNumToggler = cycle([1, -1])					# D-Val
 	playerCharToggler = cycle(['X', 'O'])               # D-Char
 
-	agent = C4_MCTSAgent(b, 'X', 1, verbose=False)
-
 	for i in range(noOfGames):
+		agent = C4_MCTSAgent(b, 'X', 1, maxIter=25000, verbose=False)
 		while b.moveCount < 43:
 			if b.moveCount > 6:
 				status = b.checkWin()
@@ -30,6 +29,7 @@ def main(noOfGames):
 					break
 			cPChar = next(playerCharToggler)
 			cPNum = next(playerNumToggler)
+			position = None
 			# Player X's turn, Agent
 			if cPNum == 1:
 				position = agent.getMove()
@@ -39,9 +39,12 @@ def main(noOfGames):
 			# Player O's turn, Human
 			elif cPNum == -1:
 				print(f"\n{b.moveCount + 1}: Player {cPChar}: ", end='', flush=True)
-				while not b.makeMove(cPNum, int(input()) - 1):
+				position = int(input()) - 1
+				while not b.makeMove(cPNum, position):
 					print("Already Occuipied or Invalid Position", end='')
+					position = int(input()) - 1
 					print(f"\n{b.moveCount + 1}: Player {cPChar}: ", end='', flush=True)
+			agent.setNodeMove(cPNum, position)
 			b.printBoard()
 			print("")
 		
@@ -49,8 +52,5 @@ def main(noOfGames):
 		b.resetBoard()
 
 if __name__ == "__main__":
-	if len(argv) != 2:
-		noOfGames = 1
-	else:
-		noOfGames = int(argv[1])
+	noOfGames = 1 if len(argv) != 2 else int(argv[1])
 	main(noOfGames)
