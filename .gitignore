@@ -1,6 +1,9 @@
 # Training Data
 __data__/
 
+# Reference
+__ref__/
+
 # VSCode
 .vscode/
 
