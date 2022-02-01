@@ -22,18 +22,19 @@ def main(noOfGames):
 					print(f"Game Draw! at move: {b.moveCount}\n")
 					break
 				elif status == -1:
-					print(f"Player O Wins! at move: {b.moveCount}\n")
+					print(f"Player O (Human) Wins! at move: {b.moveCount}\n")
 					break
 				elif status == 1:
-					print(f"Player X Wins! at move: {b.moveCount}\n")
+					print(f"Player X (AI) Wins! at move: {b.moveCount}\n")
 					break
 			cPChar = next(playerCharToggler)
 			cPNum = next(playerNumToggler)
 			position = None
 			# Player X's turn, Agent
 			if cPNum == 1:
+				print("AI's turn...")
 				position = agent.getMove()
-				print(f"Chosen Position: {position}")
+				print(f"AI Chose Position: {position + 1}")
 				print(f"\n{b.moveCount + 1}: Player {cPChar}: {position + 1}", end='', flush=True)
 				b.makeMove(cPNum, position)
 			# Player O's turn, Human

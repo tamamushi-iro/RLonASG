@@ -133,7 +133,7 @@ class C4Board:
 
 	def printInfo(self):
 		print("\nGAME[0]: Connect-4\n")
-		print("INFO[0]: The positions on the board are controlled via the column numbers, i.e.")
+		print("INFO[0]: The positions on the board are chosen via the column numbers, i.e.")
 		print("+---+---+---+---+---+---+---+")
 		print("| 1 | 2 | 3 | 4 | 5 | 6 | 7 |")
 		print("+---+---+---+---+---+---+---+")
@@ -145,4 +145,6 @@ class C4Board:
 			else:
 				print(f"    ", end="")
 		print("+---+---+---+---+---+---+---+")
-		print("INFO[1]: Player X goes first\n")
+		print("INFO[1]: Player X goes first in the first game.")
+		print("INFO[2]: Player that loses, goes first the next game.")
+		print("INFO[3]: For sake of simplicity, Human Players are 'O' and other agents are 'X'\n")
