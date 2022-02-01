@@ -145,6 +145,6 @@ class C4Board:
 			else:
 				print(f"    ", end="")
 		print("+---+---+---+---+---+---+---+")
-		print("INFO[1]: Player X goes first in the first game.")
-		print("INFO[2]: Player that loses, goes first the next game.")
+		print("INFO[1]: Player that loses, goes first the next game.")
 		print("INFO[3]: For sake of simplicity, Human Players are 'O' and other agents are 'X'\n")
+		print("INFO[2]: Player O goes first in the first game.")
