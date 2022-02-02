@@ -1,6 +1,7 @@
 import numpy as np
 from copy import deepcopy
 from random import choice
+from time import time
 
 class Node:
 	def __init__(self, possibleMoves, playerNum, move=None, parent=None) -> None:
@@ -29,15 +30,15 @@ class Node:
 		self.wins += win
 		self.visits += 1
 
-
 class C4_MCTSAgent:
-	def __init__(self, board, pChar, pNum, maxIter=10000, verbose=False) -> None:
+	def __init__(self, board, pChar, pNum, maxIter=10000, timeout=100, verbose=False) -> None:
 		self.board = board
 		self.pChar = pChar
 		self.pNum = pNum
 		self.maxIter = maxIter
 		self.verbose = verbose
 		self.gameNode = Node(self.board.possibleMoves(), -1 * self.pNum)
+		self.timeout = timeout
 		# print(f"gameNode: {self.gameNode}")
 
 	def setNodeMove(self, pNum, move):
@@ -59,6 +60,7 @@ class C4_MCTSAgent:
 	def mcts(self):
 		rootNode = self.gameNode
 		if self.verbose: print(f"before rootNode: {rootNode}")
+		mctsStartTime = time()
 		for i in range(self.maxIter):
 			if self.verbose: print(f"Iteration: {i + 1}")
 			node = rootNode
@@ -93,6 +95,8 @@ class C4_MCTSAgent:
 			while node is not None:
 				node.update(1 if status == node.playerNum else 0)
 				node = node.parent
+			
+			if(time() - mctsStartTime > self.timeout): break
 		
 		if self.verbose: print(f"after rootNode: {rootNode}")
 		valueFunc = lambda x: x.wins/x.visits
@@ -100,5 +104,6 @@ class C4_MCTSAgent:
 		if self.verbose: print(f"bestChild: {sortedChilds[0]}")
 		for node in sortedChilds:
 			print(f"Move: {node.move + 1}\tWin Chance: {(node.wins/node.visits)*100:.2f}%")
+		print(f"Iterations: {i + 1}")
 		self.gameNode = rootNode
 		return sortedChilds[0].move
