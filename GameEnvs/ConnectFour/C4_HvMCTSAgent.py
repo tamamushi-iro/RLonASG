@@ -60,8 +60,8 @@ if __name__ == "__main__":
 	args = parser.parse_args()
 	if(args.ai_difficulty == 'easy'): agentMaxIter, agentTimeout = 500, 2.5
 	elif(args.ai_difficulty == 'normal'): agentMaxIter, agentTimeout = 2500, 5
-	elif(args.ai_difficulty == 'hard'): agentMaxIter, agentTimeout = 7000, 10
-	elif(args.ai_difficulty == 'overlord'): agentMaxIter, agentTimeout = 25000, 100
+	elif(args.ai_difficulty == 'hard'): agentMaxIter, agentTimeout = 7000, 7
+	elif(args.ai_difficulty == 'overlord'): agentMaxIter, agentTimeout = 25000, 25
 	if(args.ai_timeout): agentTimeout = args.ai_timeout
 	print(f"AI-Level set: {args.ai_difficulty}")
 	print(f"AI-Timeout set: {agentTimeout}")
