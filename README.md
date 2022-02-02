@@ -2,11 +2,7 @@
 
 Reinforcement Learning on Abstract Strategy Games
 
-Using:
+Games:
 
-- Python 3.6
-- Tensorflow 2.1.0
-- Keras 2.3.1
-
-GTU Final Year Project  
-Nishil Patel, Deep Patel & Swapnil Jagtap
+- Tic-Tac-Toe (AI agents: TD(0)Learning, Simple Classification with RNN)
+- Connect4 (AI agent: Monte Carlo Tree Search)
