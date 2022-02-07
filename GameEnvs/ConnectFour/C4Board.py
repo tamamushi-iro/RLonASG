@@ -70,7 +70,7 @@ class C4Board:
 				pBoard[i] = 'X'                 # D-Char
 			else:
 				sys.exit("Illegal number encountered on board. Exiting...")
-		print("\n+---+---+---+---+---+---+---+")
+		print("+---+---+---+---+---+---+---+")
 		print("| 1 | 2 | 3 | 4 | 5 | 6 | 7 |")
 		print("+---+---+---+---+---+---+---+")
 		for i in range(42):
@@ -147,4 +147,4 @@ class C4Board:
 		print("+---+---+---+---+---+---+---+")
 		print("INFO[1]: Player that loses, goes first the next game.")
 		print("INFO[2]: Player O goes first in the first game.")
-		print("INFO[3]: For sake of simplicity, Human Players are 'O' and other agents are 'X'\n")
+		print("INFO[3]: For sake of simplicity, Human Players are 'O' and the AI agent is 'X'\n")
