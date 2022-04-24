@@ -1,9 +1,7 @@
 from itertools import cycle
-from random import seed, choice
-from os import urandom
+from random import choice
 from time import time
 from C4Board import C4Board 
-from sys import argv
 from C4_MCTSAgent import C4_MCTSAgent
 import matplotlib.pyplot as plt
 import argparse

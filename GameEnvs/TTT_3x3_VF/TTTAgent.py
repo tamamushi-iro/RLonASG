@@ -6,11 +6,11 @@ class Agent:
 	# Kinda? Abstract Learning/Random Agent. Could be X or O. Not Sure. NO, NOT ABSTRACT. FUNCTIONING AS X PLAYER.
 	# UPDATE: I think I made abstract again.
 	def __init__(self, pChar, pNum, training=True, verbose=False):
-		self.stateValueTable = dict()
+		self.stateValueTable = dict()			# e.g.: (1, 1, 0, 0, 0, 0, 4, 0, 4): 0.67195
 		self.pChar = pChar
 		self.pNum = pNum
 		self.training = training
-		self.alpha = 0.99						# Learning-rate
+		self.alpha = 0.1						# Learning-rate
 		self.epsilon = 0.1						# Exploration-factor
 		self.stateCount = 0
 		self.verbose = verbose
@@ -60,7 +60,7 @@ class Agent:
 		# print(f"initialStateValues board: {stateArr}")
 		# print(f"initialStateValues status: {status}")
 		if status == 0:								# if Draw
-			return 1
+			return 0.5
 		elif status == 1:							# if Player O Wins
 			return 1 if self.pNum == 1 else 0
 		elif status == 2:							# if Player X Wins
