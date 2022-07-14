@@ -39,10 +39,10 @@ def play(pos):
         for b in buttons:
             b.configure(text='Red')
 
-    print(f"\nPlayer {cPChar}: ", end='', flush=True)
+    print(f"\nPlayer {cPChar}: ", flush=True)
     if not c4.makeMove(cPNum, pos):
         print("Already Occuipied or Invalid Position", end='')
-        print(f"\nPlayer {cPChar}: ", end='', flush=True)
+        print(f"\nPlayer {cPChar}: ", flush=True)
 
     c4.printBoard()
     print("")
@@ -53,7 +53,7 @@ def play(pos):
         elif c4.board[i]==1:
             canvas.itemconfigure(slots[i], fill="yellow")
 
-    if c4.count>6:
+    if c4.moveCount>6:
         status = c4.checkWin()
         if status == 0:
             print("Game Draw!\n")
