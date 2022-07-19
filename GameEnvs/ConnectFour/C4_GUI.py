@@ -1,4 +1,3 @@
-from mailbox import NotEmptyError
 import tkinter
 import C4Board
 from itertools import cycle
