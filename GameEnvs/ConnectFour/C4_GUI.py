@@ -114,7 +114,6 @@ def play(pos):
             for b in buttons:
                 b.configure(text='Yellow')
     
-    #if human's turn
     if not c4.makeMove(cPNum, pos):
         print("Already Occuipied or Invalid Position", end='')
         print(f"\nPlayer {cPChar}: ", flush=True)
@@ -175,10 +174,3 @@ def checkStatus():
     top.update()
 
 top.mainloop()
-
-
-# # Updateing statusbar
-#     print(gameMode.get())
-#     statusText.set(gameMode.get())
-#     sbar.update()
-# #
