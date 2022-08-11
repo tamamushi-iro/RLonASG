@@ -32,7 +32,7 @@ def start():
     elif(gameDifficulty.get() == 'hard'): agentMaxIter, agentTimeout = 7000, 7
     elif(gameDifficulty.get() == 'overlord'): agentMaxIter, agentTimeout = 25000, 25
     if gameMode.get(): 
-        agent = C4_MCTSAgent(c4, 'X', 1, maxIter=agentMaxIter, timeout=agentTimeout, verbose=False)
+        agent = C4_MCTSAgent(c4, 'X', 1, maxIter=agentMaxIter, timeout=agentTimeout, verbose=False, ui='GUI')
     if c4.moveCount: reset()
     buttonEnabler()
 
@@ -119,19 +119,19 @@ def play(pos):
 
     if not gameMode.get():
         fillCircle()
-        checkStatus()
+        if checkStatus(): return
     else:
         fillCircle()
         statusText.set("AI is thinking...")
         buttonDisabler()
         fillCircle()
-        checkStatus()
+        if checkStatus(): return
         agent.setNodeMove(-1, pos)
         agentMove()
-        statusText.set("Your turn")
+        statusText.set(f"AI Win probability: {agent.lastWinProbability:.2f}%. Your turn...")
         buttonEnabler()
         fillCircle()
-        checkStatus()
+        if checkStatus(): return
     
 def agentMove():
     global playerCharToggler, playerNumToggler
@@ -170,6 +170,7 @@ def checkStatus():
             statusText.set("Player X Wins!")
             winnerName = canvas.create_text(350,300,text="Yellow Won", fill="black", font=('Helvetica 24 bold'))
             buttonDisabler()
-    top.update()
+        top.update()
+        return True if status in [0, -1, 1] else False
 
 top.mainloop()

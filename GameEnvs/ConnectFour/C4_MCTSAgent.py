@@ -31,12 +31,13 @@ class Node:
 		self.visits += 1
 
 class C4_MCTSAgent:
-	def __init__(self, board, pChar, pNum, maxIter=10000, timeout=100, verbose=False) -> None:
+	def __init__(self, board, pChar, pNum, maxIter=10000, timeout=100, verbose=False, ui='TUI') -> None:
 		self.board = board
 		self.pChar = pChar
 		self.pNum = pNum
 		self.maxIter = maxIter
 		self.verbose = verbose
+		self.ui = ui
 		self.gameNode = Node(self.board.possibleMoves(), -1 * self.pNum)
 		self.timeout = timeout
 		# print(f"gameNode: {self.gameNode}")
@@ -102,8 +103,11 @@ class C4_MCTSAgent:
 		valueFunc = lambda x: x.wins/x.visits
 		sortedChilds = sorted(rootNode.childNodes, key=valueFunc)[::-1]
 		if self.verbose: print(f"bestChild: {sortedChilds[0]}")
-		for node in sortedChilds:
-			print(f"Move: {node.move + 1}\tWin Chance: {(node.wins/node.visits)*100:.2f}%")
-		print(f"Iterations: {i + 1}")
+		if self.ui == 'TUI':
+			for node in sortedChilds:
+				print(f"Move: {node.move + 1}\tWin Chance: {(node.wins/node.visits)*100:.2f}%")
+			print(f"Iterations: {i + 1}")
+		elif self.ui == 'GUI':
+			self.lastWinProbability = (sortedChilds[0].wins/sortedChilds[0].visits)*100
 		self.gameNode = rootNode
 		return sortedChilds[0].move
