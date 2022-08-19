@@ -5,25 +5,30 @@ from C4_MCTSAgent import C4_MCTSAgent
 
 top = tkinter.Tk()
 
-gameMode=tkinter.IntVar()
-mb = tkinter.Menubutton(top, text="Game mode", relief=tkinter.RAISED)
-mb.menu = tkinter.Menu(mb)
-mb["menu"]=mb.menu
-mb.menu.add_radiobutton(label="Human vs Human", variable=gameMode, value=0)
-mb.menu.add_radiobutton(label="Human vs AI", variable=gameMode, value=1)
-mb.grid(column=0, row=0)
+#adding menu bar
+menubar = tkinter.Menu(top)
+top.config(menu = menubar)
+game_Mode = tkinter.Menu(menubar, tearoff=0)
+game_Diff = tkinter.Menu(menubar, tearoff=0)
 
-gameDifficulty=tkinter.StringVar()
-mb2 = tkinter.Menubutton(top, text="Game difficulty", relief=tkinter.RAISED)
-mb2.menu = tkinter.Menu(mb2)
-mb2["menu"]=mb2.menu
-mb2.menu.add_radiobutton(label="Easy", variable=gameDifficulty, value="easy")
-mb2.menu.add_radiobutton(label="Normal", variable=gameDifficulty, value="normal")
-mb2.menu.add_radiobutton(label="Hard", variable=gameDifficulty, value="hard")
-mb2.menu.add_radiobutton(label="Overlord", variable=gameDifficulty, value="overlord")
-mb2.grid(column=1, row=0)
+gameMode = tkinter.IntVar()
 
-winnerName=None
+menubar.add_cascade(label="Game mode", menu=game_Mode)
+game_Mode.add_radiobutton(label="Human vs Human", variable=gameMode, value=0)
+game_Mode.add_radiobutton(label="Human vs AI", variable=gameMode, value=1)
+
+gameDifficulty = tkinter.StringVar()
+
+menubar.add_cascade(label="Game difficulty", menu=game_Diff)
+game_Diff.add_radiobutton(label="Easy", variable=gameDifficulty, value="easy")
+game_Diff.add_radiobutton(label="Normal", variable=gameDifficulty, value="normal")
+game_Diff.add_radiobutton(label="Hard", variable=gameDifficulty, value="hard")
+game_Diff.add_radiobutton(label="Overlord", variable=gameDifficulty, value="overlord")
+
+winnerName = None
+
+top.minsize(width=707, height=710)
+top.maxsize(width=707, height=710)
 
 def start():
     global agent
@@ -51,8 +56,8 @@ def reset():
     sbar.update()
 
 
-mb3 = tkinter.Button(top, height=2, width=10, command=start, text='Start')
-mb3.grid(column=2, row=0)
+mb3 = tkinter.Button(top, height=2, width=100, command=start, text='Start')
+mb3.grid(column=0, row=2, columnspan=7)
 
 canvas = tkinter.Canvas(top, height=600, width=700)
 
@@ -70,12 +75,16 @@ playerNumToggler = cycle([-1, 1])
 #x=1=yellow=AI
 #o=-1=red=Human
 
+canvas2 = tkinter.Canvas(top, height=600, width=700)
+
 buttons=[]
+canvas2.grid(column=0, row=0, columnspan=7)
 canvas.grid(column=0, row=1, columnspan=7)
 for i in range(7):
-    b=tkinter.Button(top, height=2, width=10, command=lambda i=i: play(i), text='Red')
-    b.grid(column=i, row=2)
+    b=tkinter.Button(canvas2, height=2, width=10, command=lambda i=i: play(i), text='Red')
+    b.grid(column=i, row=0, padx=10)
     buttons.append(b)
+
 
 statusText = tkinter.StringVar()
 statusText.set(gameMode.get())
@@ -86,12 +95,16 @@ sbar.update()
 def buttonDisabler():
     for b in buttons:
         b.configure(state='disabled')
+    # buttons[3].configure(state='active', text='Start?', command = start)
+    # buttons[3].configure(text = 'Start?')
 
 buttonDisabler()
 
 def buttonEnabler():
     for b in buttons:
         b.configure(state='active')
+    # buttons[3].configure(text='Red', command =lambda i=i: play(i))
+    
 
 def play(pos):
     global playerCharToggler, playerNumToggler
