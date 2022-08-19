@@ -11,7 +11,7 @@ mb.menu = tkinter.Menu(mb)
 mb["menu"]=mb.menu
 mb.menu.add_radiobutton(label="Human vs Human", variable=gameMode, value=0)
 mb.menu.add_radiobutton(label="Human vs AI", variable=gameMode, value=1)
-mb.grid(column=0, row=0)
+mb.grid(column=0, row=2)
 
 gameDifficulty=tkinter.StringVar()
 mb2 = tkinter.Menubutton(top, text="Game difficulty", relief=tkinter.RAISED)
@@ -21,9 +21,15 @@ mb2.menu.add_radiobutton(label="Easy", variable=gameDifficulty, value="easy")
 mb2.menu.add_radiobutton(label="Normal", variable=gameDifficulty, value="normal")
 mb2.menu.add_radiobutton(label="Hard", variable=gameDifficulty, value="hard")
 mb2.menu.add_radiobutton(label="Overlord", variable=gameDifficulty, value="overlord")
-mb2.grid(column=1, row=0)
+mb2.grid(column=1, row=2)
 
 winnerName=None
+
+#very responsive
+for i in range(3):
+    top.grid_rowconfigure(i,  weight =1)
+for i in range(7):
+    top.grid_columnconfigure(i,  weight =1)
 
 def start():
     global agent
@@ -52,7 +58,7 @@ def reset():
 
 
 mb3 = tkinter.Button(top, height=2, width=10, command=start, text='Start')
-mb3.grid(column=2, row=0)
+mb3.grid(column=2, row=2)
 
 canvas = tkinter.Canvas(top, height=600, width=700)
 
@@ -74,7 +80,7 @@ buttons=[]
 canvas.grid(column=0, row=1, columnspan=7)
 for i in range(7):
     b=tkinter.Button(top, height=2, width=10, command=lambda i=i: play(i), text='Red')
-    b.grid(column=i, row=2)
+    b.grid(column=i, row=0)
     buttons.append(b)
 
 statusText = tkinter.StringVar()
