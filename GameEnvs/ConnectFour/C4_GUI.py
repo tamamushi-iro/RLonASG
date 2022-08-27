@@ -1,189 +1,176 @@
 import tkinter
-import C4Board
+
+from C4Board import C4Board
 from itertools import cycle
 from C4_MCTSAgent import C4_MCTSAgent
 
-top = tkinter.Tk()
+class C4GUIClient:
+	def __init__(self):
+		self.main_win = tkinter.Tk()
+		self.game_mode = tkinter.StringVar(value='vs Human - Local')
+		self.game_diff = tkinter.StringVar(value='easy')
+		self.col_btns = []
+		self.board_slots = []
+		self.status_text = tkinter.StringVar(value='Enter Coin...')
+		self.status_bar = tkinter.Label(self.main_win, textvariable=self.status_text, relief=tkinter.SUNKEN, anchor=tkinter.W, width=100)
+		self.board_canvas = tkinter.Canvas(self.main_win, height=600, width=700)
+		self.winner_text = None
 
-#adding menu bar
-menubar = tkinter.Menu(top)
-top.config(menu = menubar)
-game_Mode = tkinter.Menu(menubar, tearoff=0)
-game_Diff = tkinter.Menu(menubar, tearoff=0)
+		self.c4board = C4Board()
+		self.mcts_agent = None
+		self.playerCharToggler = cycle(['O', 'X'])
+		self.playerNumToggler = cycle([-1, 1])
 
-gameMode = tkinter.IntVar()
+		### Initialise GUI
+		# Main Window
+		self.main_win.title('Connect4')
+		self.main_win.minsize(width=708, height=710)
+		self.main_win.maxsize(width=708, height=710)
+		
+		# Menubar
+		menu_bar = tkinter.Menu(self.main_win)
 
-menubar.add_cascade(label="Game mode", menu=game_Mode)
-game_Mode.add_radiobutton(label="Human vs Human", variable=gameMode, value=0)
-game_Mode.add_radiobutton(label="Human vs AI", variable=gameMode, value=1)
+		game_mode_menu = tkinter.Menu(menu_bar, tearoff=0)
+		game_mode_menu.add_radiobutton(label="Human vs Human - Local", variable=self.game_mode, value='vs Human - Local', command=lambda: menu_bar.entryconfig('Game Difficulty', state='disabled'))
+		game_mode_menu.add_radiobutton(label="Human vs AI", variable=self.game_mode, value='vs AI', command=lambda: menu_bar.entryconfig('Game Difficulty', state='active'))
+		menu_bar.add_cascade(label='Game Mode', menu=game_mode_menu)
 
-gameDifficulty = tkinter.StringVar()
+		game_diff_menu = tkinter.Menu(menu_bar, tearoff=0)
+		game_diff_menu.add_radiobutton(label="Easy", variable=self.game_diff, value="easy")
+		game_diff_menu.add_radiobutton(label="Normal", variable=self.game_diff, value="normal")
+		game_diff_menu.add_radiobutton(label="Hard", variable=self.game_diff, value="hard")
+		game_diff_menu.add_radiobutton(label="Overlord", variable=self.game_diff, value="overlord")
+		menu_bar.add_cascade(label='Game Difficulty', menu=game_diff_menu)
+		menu_bar.entryconfig('Game Difficulty', state='disabled')
+		
+		self.main_win.config(menu=menu_bar)
 
-menubar.add_cascade(label="Game difficulty", menu=game_Diff)
-game_Diff.add_radiobutton(label="Easy", variable=gameDifficulty, value="easy")
-game_Diff.add_radiobutton(label="Normal", variable=gameDifficulty, value="normal")
-game_Diff.add_radiobutton(label="Hard", variable=gameDifficulty, value="hard")
-game_Diff.add_radiobutton(label="Overlord", variable=gameDifficulty, value="overlord")
+		# Column Buttons
+		btn_canvas = tkinter.Canvas(self.main_win)
+		btn_canvas.grid(row=0, column=0)
+		for i in range(7):
+			btn = tkinter.Button(btn_canvas, height=2, width=13, command=lambda i=i: self.play_move(i), text='Red')
+			btn.grid(row=0, column=i)
+			self.col_btns.append(btn)
+		self.change_col_btns_states('disabled')
+		
+		# Canvas & Board
+		self.board_canvas.grid(row=1, column=0, columnspan=7)
+		for j in range(6):
+			for i in range(7):
+				slot = self.board_canvas.create_oval((i*100)+5,(j*100)+5,(i*100)+95,(j*100)+95, fill="white")
+				self.board_slots.append(slot)
+		# initializing after circles so that it is placed on top of the circles
+		self.winner_text = self.board_canvas.create_text(350, 300, text='', fill='black', font=('Helvetica 24 bold'))
+		
+		# Start Button
+		start_btn = tkinter.Button(self.main_win, height=2, width=100, command=self.start, text='Start')
+		start_btn.grid(row=2, column=0, columnspan=7)
 
-winnerName = None
+		# Status Bar
+		self.status_bar.grid(row=3, column=0, columnspan=7)
+	
+	def change_col_btns_states(self, new_state):
+		for btn in self.col_btns:
+			btn.configure(state=new_state)
+	
+	def fill_gui_board(self):
+		for i in range(42):
+			if self.c4board.board[i] == -1:
+				self.board_canvas.itemconfigure(self.board_slots[i], fill='red')
+			elif self.c4board.board[i] == 1:
+				self.board_canvas.itemconfigure(self.board_slots[i], fill='yellow')
+			else:
+				self.board_canvas.itemconfigure(self.board_slots[i], fill='white')
+		self.main_win.update()
+	
+	def start(self):
+		if self.game_mode.get() == 'vs AI':
+			if self.game_diff.get() == 'easy': agentMaxIter, agentTimeout = 500, 2.5
+			elif self.game_diff.get() == 'normal': agentMaxIter, agentTimeout = 2500, 5
+			elif self.game_diff.get() == 'hard': agentMaxIter, agentTimeout = 7000, 7
+			elif self.game_diff.get() == 'overlord': agentMaxIter, agentTimeout = 25000, 25
 
-top.minsize(width=707, height=710)
-top.maxsize(width=707, height=710)
+			self.mcts_agent = C4_MCTSAgent(self.c4board, 'X', 1, maxIter=agentMaxIter, timeout=agentTimeout, verbose=False, ui='GUI')
+		
+		# if moveCount is > 0, and Start button is pressed, then we reset.
+		if self.c4board.moveCount: self.reset()
+		
+		self.change_col_btns_states('active')
+	
+	def reset(self):
+		self.c4board.resetBoard()
+		self.fill_gui_board()
+		self.change_col_btns_states('active')
+		self.board_canvas.itemconfig(self.winner_text, text='')
+		for btn in self.col_btns:
+			btn.configure(text='Red')
+		# reset playerCharToggler and playerNumToggler
+		self.playerCharToggler = cycle(['O', 'X'])
+		self.playerNumToggler = cycle([-1, 1])
+		self.status_text.set(self.game_mode.get())
+	
+	def play_move(self, position):
+		cPNum = next(self.playerNumToggler)
+		
+		if self.game_mode == 'vs AI':
+			if cPNum == -1:
+				for btn in self.col_btns:
+					btn.configure(text='Red')
+			elif cPNum == 1:
+				for btn in self.col_btns:
+					btn.configure(text='Yellow')
+		elif self.game_mode == 'vs Human - Local':
+			if cPNum == -1:
+				for btn in self.col_btns:
+					btn.configure(text='Yellow')
+			elif cPNum == 1:
+				for btn in self.col_btns:
+					btn.configure(text='Red')
+		
+		if not self.c4board.makeMove(cPNum, position):
+			self.status_text.set('Position already occupied or Invalid...')
+			cPNum = next(self.playerNumToggler)
+			return
+		
+		if self.game_mode.get() == 'vs Human - Local':
+			self.fill_gui_board()
+			if self.check_game_status(): return
+		elif self.game_mode.get() == 'vs AI':
+			self.change_col_btns_states('disabled')
+			self.status_text.set('AI is thinking...')
+			self.fill_gui_board()
+			if self.check_game_status(): return
+			self.mcts_agent.setNodeMove(-self.mcts_agent.pNum, position)
+			agent_position = self.mcts_agent.getMove()
+			self.c4board.makeMove(self.mcts_agent.pNum, agent_position)
+			self.mcts_agent.setNodeMove(self.mcts_agent.pNum, agent_position)
+			next(self.playerNumToggler)
+			self.fill_gui_board()
+			self.status_text.set(f'AI win probability: {self.mcts_agent.lastWinProbability:.2f}%. Your turn...')
+			self.change_col_btns_states('active')
+			if self.check_game_status(): return
+	
+	def check_game_status(self):
+		if self.c4board.moveCount > 6:
+			status = self.c4board.checkWin()
+			if status == 0:
+				self.status_text.set('Game Draw!')
+				self.board_canvas.itemconfig(self.winner_text, text='Game Draw!')
+				self.change_col_btns_states('disabled')
+			elif status == -1:
+				self.status_text.set('Player Red Wins!')
+				self.board_canvas.itemconfig(self.winner_text, text='Player Red Wins!')
+				self.change_col_btns_states('disabled')
+			elif status == 1:
+				self.status_text.set('Player Yellow Wins!')
+				self.board_canvas.itemconfig(self.winner_text, text='Player Yellow Wins!')
+				self.change_col_btns_states('disabled')
+			self.main_win.update()
+			return True if status in [0, -1, 1] else False
+		return False
+		
 
-def start():
-    global agent
-    if(gameDifficulty.get() == 'easy'): agentMaxIter, agentTimeout = 500, 2.5
-    elif(gameDifficulty.get() == 'normal'): agentMaxIter, agentTimeout = 2500, 5
-    elif(gameDifficulty.get() == 'hard'): agentMaxIter, agentTimeout = 7000, 7
-    elif(gameDifficulty.get() == 'overlord'): agentMaxIter, agentTimeout = 25000, 25
-    if gameMode.get(): 
-        agent = C4_MCTSAgent(c4, 'X', 1, maxIter=agentMaxIter, timeout=agentTimeout, verbose=False, ui='GUI')
-    if c4.moveCount: reset()
-    buttonEnabler()
-
-def reset():
-    global playerCharToggler, playerNumToggler
-    c4.resetBoard()
-    fillCircle()
-    buttonEnabler()
-    print("reset")
-    canvas.itemconfig(winnerName, text="")
-    for b in buttons:
-        b.configure(text='Red')
-    playerCharToggler = cycle(['O', 'X'])
-    playerNumToggler = cycle([-1, 1])
-    statusText.set(gameMode.get())
-    sbar.update()
-
-
-mb3 = tkinter.Button(top, height=2, width=100, command=start, text='Start')
-mb3.grid(column=0, row=2, columnspan=7)
-
-canvas = tkinter.Canvas(top, height=600, width=700)
-
-slots=[]
-for j in range(6):
-    for i in range(7):
-        s=canvas.create_oval((i*100)+5,(j*100)+5,(i*100)+95,(j*100)+95, fill="white")
-        slots.append(s)
-
-top.title("Connect4 - Human vs AI")
-c4=C4Board.C4Board()
-
-playerCharToggler = cycle(['O', 'X'])
-playerNumToggler = cycle([-1, 1])
-#x=1=yellow=AI
-#o=-1=red=Human
-
-canvas2 = tkinter.Canvas(top, height=600, width=700)
-
-buttons=[]
-canvas2.grid(column=0, row=0, columnspan=7)
-canvas.grid(column=0, row=1, columnspan=7)
-for i in range(7):
-    b=tkinter.Button(canvas2, height=2, width=10, command=lambda i=i: play(i), text='Red')
-    b.grid(column=i, row=0, padx=10)
-    buttons.append(b)
-
-
-statusText = tkinter.StringVar()
-statusText.set(gameMode.get())
-sbar = tkinter.Label(top, textvariable=statusText, relief=tkinter.SUNKEN, anchor="w", width=100)
-sbar.grid(column=0, row=3, columnspan=7)
-sbar.update()
-
-def buttonDisabler():
-    for b in buttons:
-        b.configure(state='disabled')
-    # buttons[3].configure(state='active', text='Start?', command = start)
-    # buttons[3].configure(text = 'Start?')
-
-buttonDisabler()
-
-def buttonEnabler():
-    for b in buttons:
-        b.configure(state='active')
-    # buttons[3].configure(text='Red', command =lambda i=i: play(i))
-    
-
-def play(pos):
-    global playerCharToggler, playerNumToggler
-    cPChar = next(playerCharToggler)
-    cPNum = next(playerNumToggler)
-    
-    if not gameMode.get():
-        if cPNum==-1:
-            for b in buttons:
-                b.configure(text='Yellow')
-        elif cPNum==1:
-            for b in buttons:
-                b.configure(text='Red')
-    else:
-        if cPNum==-1:
-            for b in buttons:
-                b.configure(text='Red')
-        elif cPNum==1:
-            for b in buttons:
-                b.configure(text='Yellow')
-    
-    if not c4.makeMove(cPNum, pos):
-        print("Already Occuipied or Invalid Position", end='')
-        print(f"\nPlayer {cPChar}: ", flush=True)
-
-    if not gameMode.get():
-        fillCircle()
-        if checkStatus(): return
-    else:
-        fillCircle()
-        statusText.set("AI is thinking...")
-        buttonDisabler()
-        fillCircle()
-        if checkStatus(): return
-        agent.setNodeMove(-1, pos)
-        agentMove()
-        statusText.set(f"AI Win probability: {agent.lastWinProbability:.2f}%. Your turn...")
-        buttonEnabler()
-        fillCircle()
-        if checkStatus(): return
-    
-def agentMove():
-    global playerCharToggler, playerNumToggler
-    position = agent.getMove()
-    c4.makeMove(1, position)
-    agent.setNodeMove(1, position)
-    next(playerCharToggler)
-    next(playerNumToggler)
-
-def fillCircle():
-    for i in range(42):
-        if c4.board[i]==-1:
-            canvas.itemconfigure(slots[i], fill="red")
-        elif c4.board[i]==1:
-            canvas.itemconfigure(slots[i], fill="yellow")
-        else:
-            canvas.itemconfigure(slots[i], fill="white")
-    top.update()
-
-def checkStatus():
-    global winnerName
-    if c4.moveCount>6:
-        status = c4.checkWin()
-        if status == 0:
-            print("Game Draw!\n")
-            statusText.set("Game Draw!")
-            winnerName = canvas.create_text(350,300,text="Game Draw", fill="black", font=('Helvetica 24 bold'))
-            buttonDisabler()
-        elif status == -1:
-            print(f"Player O Wins!\n")
-            statusText.set("Player O Wins!")
-            winnerName = canvas.create_text(350,300,text="Red Won", fill="black", font=('Helvetica 24 bold'))
-            buttonDisabler()
-        elif status == 1:
-            print(f"Player X Wins!\n")
-            statusText.set("Player X Wins!")
-            winnerName = canvas.create_text(350,300,text="Yellow Won", fill="black", font=('Helvetica 24 bold'))
-            buttonDisabler()
-        top.update()
-        return True if status in [0, -1, 1] else False
-
-top.mainloop()
+if __name__ == '__main__':
+	gui = C4GUIClient()
+	gui.main_win.mainloop()
