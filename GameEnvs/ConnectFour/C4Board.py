@@ -85,6 +85,7 @@ class C4Board:
 	def resetBoard(self):
 		self.board = array('i', [0] * 42)
 		self.moveCount = 0
+		self.lastPlayedPosition = None
 
 	def makeMove(self, playerNum, position):
 		if position < 0 or position > 6:

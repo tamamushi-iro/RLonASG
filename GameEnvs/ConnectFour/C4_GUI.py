@@ -58,7 +58,7 @@ class C4GUIClient:
 		self.board_canvas.grid(row=1, column=0, columnspan=7)
 		for j in range(6):
 			for i in range(7):
-				slot = self.board_canvas.create_oval((i*100)+5,(j*100)+5,(i*100)+95,(j*100)+95, fill="white")
+				slot = self.board_canvas.create_oval((i*100)+5,(j*100)+5,(i*100)+95,(j*100)+95, fill='white')
 				self.board_slots.append(slot)
 		# initializing after circles so that it is placed on top of the circles
 		self.winner_text = self.board_canvas.create_text(350, 300, text='', fill='black', font=('Helvetica 24 bold'))
@@ -77,11 +77,14 @@ class C4GUIClient:
 	def fill_gui_board(self):
 		for i in range(42):
 			if self.c4board.board[i] == -1:
-				self.board_canvas.itemconfigure(self.board_slots[i], fill='red')
+				self.board_canvas.itemconfigure(self.board_slots[i], fill='red', outline='black')
 			elif self.c4board.board[i] == 1:
-				self.board_canvas.itemconfigure(self.board_slots[i], fill='yellow')
+				self.board_canvas.itemconfigure(self.board_slots[i], fill='yellow', outline='black')
 			else:
-				self.board_canvas.itemconfigure(self.board_slots[i], fill='white')
+				self.board_canvas.itemconfigure(self.board_slots[i], fill='white', outline='black', width=1)
+		# highlight last dropped slot/disk
+		if self.c4board.lastPlayedPosition is not None:
+			self.board_canvas.itemconfigure(self.board_slots[self.c4board.lastPlayedPosition], outline='orange', width=2.5)
 		self.main_win.update()
 	
 	def start(self):
@@ -95,8 +98,10 @@ class C4GUIClient:
 		
 		# if moveCount is > 0, and Start button is pressed, then we reset.
 		if self.c4board.moveCount: self.reset()
+		self.status_text.set(f'Human {self.game_mode.get()}')
 		
 		self.change_col_btns_states('active')
+		self.status_bar.update()
 	
 	def reset(self):
 		self.c4board.resetBoard()
@@ -108,19 +113,18 @@ class C4GUIClient:
 		# reset playerCharToggler and playerNumToggler
 		self.playerCharToggler = cycle(['O', 'X'])
 		self.playerNumToggler = cycle([-1, 1])
-		self.status_text.set(self.game_mode.get())
 	
 	def play_move(self, position):
 		cPNum = next(self.playerNumToggler)
 		
-		if self.game_mode == 'vs AI':
+		if self.game_mode.get() == 'vs AI':
 			if cPNum == -1:
 				for btn in self.col_btns:
 					btn.configure(text='Red')
 			elif cPNum == 1:
 				for btn in self.col_btns:
 					btn.configure(text='Yellow')
-		elif self.game_mode == 'vs Human - Local':
+		elif self.game_mode.get() == 'vs Human - Local':
 			if cPNum == -1:
 				for btn in self.col_btns:
 					btn.configure(text='Yellow')
